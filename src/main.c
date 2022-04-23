@@ -34,10 +34,8 @@
 #include <sys/time.h>
 #include <sys/sysinfo.h>
 #include <errno.h>
+#include "v4l2_driver.h"
 
-#define HORIZONTAL_RES (640)
-#define VERTICAL_RES   (480)
-#define DEVICE_NAME    ("/dev/video0")
 #define NUM_CPU_CORES (1)
 #define NUM_THREADS	(4 + 1)
 
@@ -56,7 +54,7 @@ typedef struct
 } threadParams_t;
 struct utsname system_info;
 cpu_set_t allcpuset;
-sem_t semS1, semS2, semS3, semS4;
+sem_t semS1, semS2, semS3, semS4, semS5, semS6, semS7;
 
 /**********************************************************************************
 *				FUNCTION DEFINITION
