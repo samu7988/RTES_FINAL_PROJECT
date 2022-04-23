@@ -37,7 +37,7 @@
 
 void get_timestamp(double *timestamp)
 {
-    struct timespec timeval;
+    struct timespec time_val;
     clock_gettime(CLOCK_REALTIME,&time_val);
     *timestamp = ((double)time_val.tv_sec + (double)((time_val.tv_nsec)/(double)1000000000));
 }
