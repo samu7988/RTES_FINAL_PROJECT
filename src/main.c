@@ -56,6 +56,8 @@ typedef struct
 struct utsname system_info;
 cpu_set_t allcpuset;
 sem_t semS1, semS2, semS3, semS4, semS5, semS6, semS7;
+int abortS1 = 0;
+int total_frames = 0;
 
 /**********************************************************************************
 *				FUNCTION DEFINITION
@@ -105,6 +107,14 @@ int main(int argc, char** argv)
         exit(0);
     }
 
+    if(freq == 1)
+    {
+      total_frames = 1800; //This is based upon calculation that in 30 mins, 1800 frames would be captured at 1 Hz
+    }
+    else if(freq == 10)
+    {
+      total_frames = 18000;
+    }
     printf("\n\rExecuting program for frequency %u and socket enable %u",freq,socket);
     printf("\n\rMachine has %u processors and %u available",get_nprocs_conf(), get_nprocs());
 
