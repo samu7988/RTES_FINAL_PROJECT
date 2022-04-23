@@ -233,7 +233,7 @@ int main(int argc, char** argv)
 	pthread_attr_setschedparam(&rt_sched_attr[2], &rt_param[2]);
 	
 	/* Create Thread */
-	rc=pthread_create(&threads[2], &rt_sched_attr[2], Image_capture, (void *)&(threadParams[2]));
+	rc=pthread_create(&threads[2], &rt_sched_attr[2], Image_capture_thread, (void *)&(threadParams[2]));
 	if(rc < 0)
     {
 		perror("Image capture thread failed");
@@ -256,7 +256,7 @@ int main(int argc, char** argv)
 	pthread_attr_setschedparam(&rt_sched_attr[1], &rt_param[1]);
 	
 	/* Create Thread */
-	rc=pthread_create(&threads[1], &rt_sched_attr[1], Image_store, (void *)&(threadParams[1]));
+	rc=pthread_create(&threads[1], &rt_sched_attr[1], Image_store_thread, (void *)&(threadParams[1]));
 	if(rc < 0)
     {
 		perror("Image store thread failed");
@@ -279,7 +279,7 @@ int main(int argc, char** argv)
 	pthread_attr_setschedparam(&rt_sched_attr[0], &rt_param[0]);
 	
 	/* Create Thread */
-	rc=pthread_create(&threads[0], &rt_sched_attr[0], Image_store, (void *)&(threadParams[0]));
+	rc=pthread_create(&threads[0], &rt_sched_attr[0], Image_store_thread, (void *)&(threadParams[0]));
 	if(rc < 0)
     {
 		perror("Image store thread failed");
