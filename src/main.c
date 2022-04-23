@@ -58,7 +58,7 @@ cpu_set_t allcpuset;
 sem_t semS1, semS2, semS3, semS4, semS5, semS6, semS7;
 int abortS1 = 0;
 int total_frames = 0;
-
+char ppm_header[200];
 /**********************************************************************************
 *				FUNCTION DEFINITION
 ***************************************************************************************/
@@ -129,7 +129,8 @@ int main(int argc, char** argv)
     printf("Release:   %s\n",system_info.release);
     printf("Version:   %s\n",system_info.version);
     printf("machine:   %s\n",system_info.machine);
-
+		sprintf(ppm_header,"P6\n#9999999999 sec 9999999999 msec                                                                            \n%s %s\n255\n",HORIZONTAL_RES_STR,VERTICAL_RES_STR);
+    
     //Reference: Sam Siewert sequencer code
     CPU_ZERO(&allcpuset);
 

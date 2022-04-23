@@ -95,13 +95,11 @@ static enum io_method   io = IO_METHOD_MMAP;
 static int              fd = -1;
 struct buffer          *buffers;
 static unsigned int     n_buffers;
-static int              out_buf;
 static int              force_format=1;
-static int              frame_count = 30;
+int size_of_image = 0;
+unsigned char bigbuffer[(640*480*3)]; //In this buffer, the image capture thread stores RGB image frame data
 
 
-unsigned int framecnt=0;
-unsigned char bigbuffer[(640*480*3)];
  void errno_exit(const char *s)
 {
         fprintf(stderr, "%s error %d, %s\n", s, errno, strerror(errno));
@@ -121,7 +119,6 @@ unsigned char bigbuffer[(640*480*3)];
         return r;
 }
 
-char ppm_header[]="P6\n#9999999999 sec 9999999999 msec \n"HORIZONTAL_RES_STR" "VERTICAL_RES_STR"\n255\n";
 char ppm_dumpname[]="test00000000.ppm";
 
  void dump_ppm(const void *p, int size, unsigned int tag, struct timespec *time)
@@ -135,7 +132,8 @@ char ppm_dumpname[]="test00000000.ppm";
     snprintf(&ppm_header[4], 11, "%010d", (int)time->tv_sec);
     strcat(&ppm_header[14], " sec ");
     snprintf(&ppm_header[19], 11, "%010d", (int)((time->tv_nsec)/1000000));
-    strcat(&ppm_header[29], " msec \n"HORIZONTAL_RES_STR" "VERTICAL_RES_STR"\n255\n");
+    snprintf(ppm_header+36, 65,"%s",(system_info.version));
+    snprintf(ppm_header+80, 65,"%s",(system_info.nodename));
     written=write(dumpfd, ppm_header, sizeof(ppm_header));
 
     total=0;
@@ -203,7 +201,8 @@ void yuv2rgb(int y, int u, int v, unsigned char *r, unsigned char *g, unsigned c
     int i, newi, newsize=0;
     int y_temp, y2_temp, u_temp, v_temp;
     unsigned char *pptr = (unsigned char *)p;
-
+    
+    size_of_image = size;	
     // record when process was called
     clock_gettime(CLOCK_REALTIME, &frame_time);    
 

@@ -40,6 +40,8 @@ extern int abortS1;
 extern sem_t semS1, semS2, semS3, semS4, semS5, semS6, semS7;
 extern int total_frames;
 extern struct timespec frame_time;
+extern unsigned char bigbuffer[(640*480*3)]; 
+extern unsigned char image_store[60][640*480*3];
 
 /***************************************************************************************
 *				FUNCTION PROTOTYPE
