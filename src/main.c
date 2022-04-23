@@ -16,6 +16,8 @@
 *					HEADER FILE SECTION
 *****************************************************************************************/
 #include<stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #define HORIZONTAL_RES (640)
 #define VERTICAL_RES   (480)
