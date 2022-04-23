@@ -1,4 +1,4 @@
 #!/bin/bash
 git pull
 make
-./main 1 1
+sudo ./main 1 1
