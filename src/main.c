@@ -65,15 +65,21 @@ int main(int argc, char** argv)
 
     printf("\n\rExecuting program for frequency %u and socket enable %u",freq,socket);
     printf("\n\rMachine has %u processors and %u available",get_nprocs_conf(), get_nprocs());
-    
+
     if( uname(&system_info) != 0)
     {
         printf("\n\rUname() failed");
         exit(0);
     }
 
-    system("uname -a");
-
+    system("uname -a"); //Prints system info such as OS, OS Version, architecture
+    printf("\n\rHOST NAME SIZE = %ld\n",sizeof(system_info));
+    printf("Host name:  %s\n",system_info.sysname);
+    printf("Node name:  %ld\n",sizeof(system_info.nodename));
+    printf("Release:    %s\n",system_info.release);
+    printf("Version:    %s\n",system_info.version);
+    printf("machine:    %s\n",system_info.machine);
+    printf("Domain name:%s\n",system_info.domainname);
 
     return 0;
 }
