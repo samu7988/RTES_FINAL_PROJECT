@@ -48,6 +48,12 @@ void print_scheduler(void);
 /**************************************************************************************
 *					GLOBAL VARIABLE
 *******************************************************************************************/
+
+typedef struct
+{
+    int threadIdx;
+    unsigned long long sequencePeriods;
+} threadParams_t;
 struct utsname system_info;
 cpu_set_t allcpuset;
 
