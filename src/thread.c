@@ -152,6 +152,8 @@ void* Sequencer(void* params)
     struct timeval current_time_val;
     struct timespec delay_time = {0,999999999};//{0,100000000}; // delay for 1000 msec, 1 Hz
     struct timespec remaining_time;
+    struct timespec set_time_1hz;		
+	struct timespec reference_time_1hz;	
     double current_time;
     double residual;
     int rc, delay_cnt=0;
@@ -160,7 +162,7 @@ void* Sequencer(void* params)
 
     // syslog(LOG_CRIT, "Sequencer thread @ sec=%d, msec=%d\n", (int)(current_time_val.tv_sec-start_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
     // printf("Sequencer thread @ sec=%d, msec=%d\n", (int)(current_time_val.tv_sec-start_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
-
+    int j =1;
     do
     {
         delay_cnt=0; residual=0.0;
@@ -169,7 +171,18 @@ void* Sequencer(void* params)
         //syslog(LOG_CRIT, "Sequencer thread prior to delay @ sec=%d, msec=%d\n", (int)(current_time_val.tv_sec-start_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
         do
         {
-            rc=nanosleep(&delay_time, &remaining_time);
+            if(j == 1)
+				{
+					clock_gettime(CLOCK_REALTIME, &reference_time_1hz);
+					set_time_1hz = reference_time_1hz;
+					syslog(LOG_INFO,"REFERENCE TIME: %lf seconds\n",((double)reference_time_1hz.tv_sec + (double)((reference_time_1hz.tv_nsec)/(double)1000000000)));
+					j++;
+				}
+
+
+				set_time_1hz.tv_sec +=1;
+
+				clock_nanosleep(CLOCK_REALTIME, TIMER_ABSTIME, &set_time_1hz, NULL);
 
             if(rc == EINTR)
             { 
