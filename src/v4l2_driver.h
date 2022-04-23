@@ -20,11 +20,11 @@
 /****************************************************************************************
 *				     MACROS AND ENUMS
 *****************************************************************************************/
-#define DEVICE_NAME    ("/dev/video0")
+#define DEVICE_NAME    "/dev/video0"
 #define HORIZONTAL_RES (640)
 #define VERTICAL_RES   (480)
-#define HORIZONTAL_RES_STR ("640")
-#define VERTICAL_RES_STR   ("480")
+#define HORIZONTAL_RES_STR "640"
+#define VERTICAL_RES_STR   "480"
 /****************************************************************************************
 *				GLOBAL VARIABLE SECTION
 *****************************************************************************************/
