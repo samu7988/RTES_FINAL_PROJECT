@@ -279,7 +279,7 @@ int main(int argc, char** argv)
 	pthread_attr_setschedparam(&rt_sched_attr[0], &rt_param[0]);
 	
 	/* Create Thread */
-	rc=pthread_create(&threads[0], &rt_sched_attr[0], Image_store_thread, (void *)&(threadParams[0]));
+	rc=pthread_create(&threads[0], &rt_sched_attr[0], Sequencer, (void *)&(threadParams[0]));
 	if(rc < 0)
     {
 		perror("Image store thread failed");
