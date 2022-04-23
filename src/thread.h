@@ -1,9 +1,9 @@
-#ifndef I2C_H_
-#define I2C_H_
+#ifndef THREAD_H_
+#define THREAD_H_
 /********************************************************************************************
 *					FILENAME: .h
 **********************************************************************************************/
-/* Title: i2c.h
+/* Title: thread.h
  * Brief:
  * Author: Sayali Mule
  * Date Created: March 09,2022
@@ -35,4 +35,4 @@ void* Image_capture_thread(void* );
 void* Image_store_thread(void* );
 void* Sequencer(void* );
 
-#endif //I2C_H_
+#endif //THREAD_H_
