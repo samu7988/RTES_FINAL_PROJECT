@@ -165,11 +165,11 @@ int main(int argc, char** argv)
         int idx;
         int c;
 
-        c = getopt_long(argc, argv,
-                    short_options, long_options, &idx);
+        // c = getopt_long(argc, argv,
+        //             short_options, long_options, &idx);
 
-        if (-1 == c)
-            break;
+        // if (-1 == c)
+        //     break;
 
         // switch (c)
         // {
