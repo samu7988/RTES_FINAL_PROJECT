@@ -150,7 +150,7 @@ void* Sequencer(void* params)
 {
     printf("\n\rSequencer thread run");
     struct timeval current_time_val;
-    struct timespec delay_time = {0,1000000}; // delay for 1000 msec, 1 Hz
+    struct timespec delay_time = {0,100000000}; // delay for 1000 msec, 1 Hz
     struct timespec remaining_time;
     double current_time;
     double residual;
