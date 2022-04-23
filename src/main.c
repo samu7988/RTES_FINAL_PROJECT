@@ -160,6 +160,73 @@ int main(int argc, char** argv)
     printf("rt_max_prio=%d\n", rt_max_prio);
     printf("rt_min_prio=%d\n", rt_min_prio);    
 
+    for (;;)
+    {
+        int idx;
+        int c;
+
+        c = getopt_long(argc, argv,
+                    short_options, long_options, &idx);
+
+        if (-1 == c)
+            break;
+
+        switch (c)
+        {
+            case 0: /* getopt_long() flag */
+                break;
+
+            case 'd':
+                dev_name = optarg;
+                break;
+
+            case 'h':
+                usage(stdout, argc, argv);
+                exit(EXIT_SUCCESS);
+
+            case 'm':
+                io = IO_METHOD_MMAP;
+                break;
+
+            case 'r':
+                io = IO_METHOD_READ;
+                break;
+
+            case 'u':
+                io = IO_METHOD_USERPTR;
+                break;
+
+            case 'o':
+                out_buf++;
+                break;
+
+            case 'f':
+                force_format++;
+                break;
+
+            case 'c':
+                errno = 0;
+                frame_count = strtol(optarg, NULL, 0);
+                if (errno)
+                        errno_exit(optarg);
+                break;
+
+            default:
+                usage(stderr, argc, argv);
+                exit(EXIT_FAILURE);
+        }
+    }
+
+    open_device();
+    init_device();
+    start_capturing();
+    mainloop();
+    stop_capturing();
+    uninit_device();
+    close_device();
+    fprintf(stderr, "\n");
+    return 0;
+}
 
 
 
