@@ -18,13 +18,16 @@
 #include<stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/utsname.h>
+
 
 #define HORIZONTAL_RES (640)
 #define VERTICAL_RES   (480)
-#define DEVICE_NAME    ()
+#define DEVICE_NAME    ("/dev/video0")
 /**************************************************************************************
 *					GLOBAL VARIABLE
 *******************************************************************************************/
+struct utsname system_info;
 
 /**********************************************************************************
 *				FUNCTION DEFINITION
@@ -59,5 +62,18 @@ int main(int argc, char** argv)
         printf("\n\rInvalid input: Acceptable value for socket field is either 0 or 1");
         exit(0);
     }
+
+    printf("\n\rExecuting program for frequency %u and socket enable %u",freq,socket);
+    printf("\n\rMachine has %u processors and %u available",get_nprocs_conf(), get_nprocs());
+    
+    if( uname(&system_info) != 0)
+    {
+        printf("\n\rUname() failed");
+        exit(0);
+    }
+
+    system("uname -a");
+
+
     return 0;
 }
