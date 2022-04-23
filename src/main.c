@@ -160,10 +160,10 @@ int main(int argc, char** argv)
     printf("rt_max_prio=%d\n", rt_max_prio);
     printf("rt_min_prio=%d\n", rt_min_prio);    
 
-    for (;;)
-    {
-        int idx;
-        int c;
+    // for (;;)
+    // {
+    //     int idx;
+    //     int c;
 
         // c = getopt_long(argc, argv,
         //             short_options, long_options, &idx);
@@ -215,7 +215,7 @@ int main(int argc, char** argv)
         //         usage(stderr, argc, argv);
         //         exit(EXIT_FAILURE);
         // }
-    }
+    // }
 
     open_device();
     init_device();
