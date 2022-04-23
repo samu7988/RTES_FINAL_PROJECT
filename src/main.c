@@ -171,50 +171,50 @@ int main(int argc, char** argv)
         if (-1 == c)
             break;
 
-        switch (c)
-        {
-            case 0: /* getopt_long() flag */
-                break;
+        // switch (c)
+        // {
+        //     case 0: /* getopt_long() flag */
+        //         break;
 
-            case 'd':
-                dev_name = optarg;
-                break;
+        //     case 'd':
+        //         dev_name = optarg;
+        //         break;
 
-            case 'h':
-                usage(stdout, argc, argv);
-                exit(EXIT_SUCCESS);
+        //     case 'h':
+        //         usage(stdout, argc, argv);
+        //         exit(EXIT_SUCCESS);
 
-            case 'm':
-                io = IO_METHOD_MMAP;
-                break;
+        //     case 'm':
+        //         io = IO_METHOD_MMAP;
+        //         break;
 
-            case 'r':
-                io = IO_METHOD_READ;
-                break;
+        //     case 'r':
+        //         io = IO_METHOD_READ;
+        //         break;
 
-            case 'u':
-                io = IO_METHOD_USERPTR;
-                break;
+        //     case 'u':
+        //         io = IO_METHOD_USERPTR;
+        //         break;
 
-            case 'o':
-                out_buf++;
-                break;
+        //     case 'o':
+        //         out_buf++;
+        //         break;
 
-            case 'f':
-                force_format++;
-                break;
+        //     case 'f':
+        //         force_format++;
+        //         break;
 
-            case 'c':
-                errno = 0;
-                frame_count = strtol(optarg, NULL, 0);
-                if (errno)
-                        errno_exit(optarg);
-                break;
+        //     case 'c':
+        //         errno = 0;
+        //         frame_count = strtol(optarg, NULL, 0);
+        //         if (errno)
+        //                 errno_exit(optarg);
+        //         break;
 
-            default:
-                usage(stderr, argc, argv);
-                exit(EXIT_FAILURE);
-        }
+        //     default:
+        //         usage(stderr, argc, argv);
+        //         exit(EXIT_FAILURE);
+        // }
     }
 
     open_device();
@@ -225,9 +225,7 @@ int main(int argc, char** argv)
     uninit_device();
     close_device();
     fprintf(stderr, "\n");
-    return 0;
-}
-
+ 
 
 
     return 0;
