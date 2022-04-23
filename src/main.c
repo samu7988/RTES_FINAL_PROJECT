@@ -39,7 +39,12 @@
 #define VERTICAL_RES   (480)
 #define DEVICE_NAME    ("/dev/video0")
 #define NUM_CPU_CORES (1)
+#define NUM_THREADS	(4 + 1)
 
+/**************************************************************************************
+*					Function declaration
+*******************************************************************************************/
+void print_scheduler(void);
 /**************************************************************************************
 *					GLOBAL VARIABLE
 *******************************************************************************************/
@@ -142,5 +147,28 @@ int main(int argc, char** argv)
 
     printf("rt_max_prio=%d\n", rt_max_prio);
     printf("rt_min_prio=%d\n", rt_min_prio);    
+
     return 0;
+}
+
+void print_scheduler(void)
+{
+   int schedType;
+
+   schedType = sched_getscheduler(getpid());
+
+   switch(schedType)
+   {
+       case SCHED_FIFO:
+           printf("Pthread Policy is SCHED_FIFO\n");
+           break;
+       case SCHED_OTHER:
+           printf("Pthread Policy is SCHED_OTHER\n"); exit(-1);
+         break;
+       case SCHED_RR:
+           printf("Pthread Policy is SCHED_RR\n"); exit(-1);
+           break;
+       default:
+           printf("Pthread Policy is UNKNOWN\n"); exit(-1);
+   }
 }
