@@ -158,7 +158,6 @@ void* Sequencer(void* params)
     unsigned long long seqCnt=0;
     threadParams_t *threadParams = (threadParams_t *)params;
 
-    gettimeofday(&current_time_val, (struct timezone *)0);
     // syslog(LOG_CRIT, "Sequencer thread @ sec=%d, msec=%d\n", (int)(current_time_val.tv_sec-start_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
     // printf("Sequencer thread @ sec=%d, msec=%d\n", (int)(current_time_val.tv_sec-start_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
 
@@ -190,9 +189,8 @@ void* Sequencer(void* params)
 
         seqCnt++;
         gettimeofday(&current_time_val, (struct timezone *)0);
-        syslog(LOG_CRIT, "Sequencer cycle %llu @ sec=%d, msec=%d\n", seqCnt, (int)(current_time_val.tv_sec-prev_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
-        printf( "Sequencer cycle %llu @ sec=%d, msec=%d\n", seqCnt, (int)(current_time_val.tv_sec-prev_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
-        prev_time_val = current_time_val;
+       // syslog(LOG_CRIT, "Sequencer cycle %llu @ sec=%d, msec=%d\n", seqCnt, (int)(current_time_val.tv_sec-prev_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
+        printf( "Sequencer cycle %llu @ sec=%d, msec=%d\n", seqCnt, (int)(current_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
 
         if(delay_cnt > 1) printf("Sequencer looping delay %d\n", delay_cnt);
 
