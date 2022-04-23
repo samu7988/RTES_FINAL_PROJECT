@@ -28,6 +28,7 @@
 *					GLOBAL VARIABLE
 *******************************************************************************************/
 struct utsname system_info;
+cpu_set_t allcpuset;
 
 /**********************************************************************************
 *				FUNCTION DEFINITION
@@ -72,13 +73,21 @@ int main(int argc, char** argv)
         exit(0);
     }
 
-    system("uname -a"); //Prints system info such as OS, OS Version, architecture
-    printf("\n\rHOST NAME SIZE = %ld\n",sizeof(system_info));
-    printf("Host name:  %s\n",system_info.sysname);
-    printf("Node name:  %ld\n",sizeof(system_info.nodename));
-    printf("Release:    %s\n",system_info.release);
-    printf("Version:    %s\n",system_info.version);
-    printf("machine:    %s\n",system_info.machine);
+    printf("Host name: %s\n",system_info.sysname);
+    printf("Node name: %ld\n",sizeof(system_info.nodename));
+    printf("Release:   %s\n",system_info.release);
+    printf("Version:   %s\n",system_info.version);
+    printf("machine:   %s\n",system_info.machine);
 
+    //Reference: Sam Siewert sequencer code
+    CPU_ZERO(&allcpuset);
+
+    for(i=0; i < NUM_CPU_CORES; i++)
+    {
+       CPU_SET(i, &allcpuset);
+    }
+
+    printf("Using CPUS=%d from total available.\n", CPU_COUNT(&allcpuset));
+    
     return 0;
 }
