@@ -86,7 +86,7 @@ int main(int argc, char** argv)
     //Reference: Sam Siewert sequencer code
     CPU_ZERO(&allcpuset);
 
-    for(i=0; i < NUM_CPU_CORES; i++)
+    for(int i=0; i < NUM_CPU_CORES; i++)
     {
        CPU_SET(i, &allcpuset);
     }
