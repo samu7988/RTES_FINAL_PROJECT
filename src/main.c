@@ -48,15 +48,13 @@ void print_scheduler(void);
 *					GLOBAL VARIABLE
 *******************************************************************************************/
 
-typedef struct
-{
-    int threadIdx;
-    unsigned long long sequencePeriods;
-} threadParams_t;
+
 struct utsname system_info;
 cpu_set_t allcpuset;
 sem_t semS1, semS2, semS3, semS4, semS5, semS6, semS7;
 int abortS1 = 0;
+int abortS2 = 0;
+
 int total_frames = 0;
 char ppm_header[200];
 /**********************************************************************************

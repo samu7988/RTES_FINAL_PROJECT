@@ -26,7 +26,8 @@
 *					GLOBAL VARIABLE
 *******************************************************************************************/
 unsigned char image_store[60][640*480*3];
-struct timeval current_time_val;
+struct timeval prev_time_val;
+int abortTest=0;
 
 /**********************************************************************************
 *				FUNCTION DEFINITION
