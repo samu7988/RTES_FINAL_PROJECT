@@ -19,11 +19,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/utsname.h>
+#include <sys/sysinfo.h>
+#include <sched.h>
 
 
 #define HORIZONTAL_RES (640)
 #define VERTICAL_RES   (480)
 #define DEVICE_NAME    ("/dev/video0")
+#define NUM_CPU_CORES (1)
+
 /**************************************************************************************
 *					GLOBAL VARIABLE
 *******************************************************************************************/
