@@ -18,10 +18,16 @@
 #include <stdio.h>
 #include "thread.h"
 #include "v4l2_driver.h"
+
+
+#define USEC_PER_MSEC (1000)
+#define NANOSEC_PER_SEC (1000000000)
 /**************************************************************************************
 *					GLOBAL VARIABLE
 *******************************************************************************************/
 unsigned char image_store[60][640*480*3];
+struct timeval current_time_val;
+
 /**********************************************************************************
 *				FUNCTION DEFINITION
 ***************************************************************************************/
@@ -62,7 +68,7 @@ void* Image_dump_thread(void* params)
         get_timestamp(&start_time); //get start time
         printf("\n\rStart time %lf",start_time);
 
-        dump_ppm( (image_store + (frame_dump_cnt % 60)), ((size_of_image*6)/4), frame_dump_cnt, &frame_time);
+        //dump_ppm( (image_store + (frame_dump_cnt % 60)), ((size_of_image*6)/4), frame_dump_cnt, &frame_time);
 
 
         get_timestamp(&end_time); //get end time
@@ -88,7 +94,7 @@ void* Image_capture_thread(void* params)
 
         get_timestamp(&start_time); //get start time
         printf("\n\rStart time %lf",start_time);
-        mainloop(); //Read frame and convert it to RGB
+       // mainloop(); //Read frame and convert it to RGB
 
         get_timestamp(&end_time); //get end time
         printf("\n\r Stop time %lf",end_time);
@@ -122,10 +128,10 @@ void* Image_store_thread(void* params)
         printf("\n\rStart time %lf",start_time);
 
         //Copy image from Big buffer into circular buffer(big buffer is populated in image capture thread) 
-		for(int i=0;i<(640*480*3);i++)
-		{
-			image_store[frame_store_cnt % 60][i] = bigbuffer[i];
-		}
+		// for(int i=0;i<(640*480*3);i++)
+		// {
+		// 	image_store[frame_store_cnt % 60][i] = bigbuffer[i];
+		// }
 
         get_timestamp(&end_time); //get end time
         printf("\n\r Stop time %lf",end_time);
@@ -142,4 +148,67 @@ void* Image_store_thread(void* params)
 void* Sequencer(void* params)
 {
     printf("\n\rSequencer thread run");
+    struct timeval current_time_val;
+    struct timespec delay_time = {0,1000000000}; // delay for 1000 msec, 1 Hz
+    struct timespec remaining_time;
+    double current_time;
+    double residual;
+    int rc, delay_cnt=0;
+    unsigned long long seqCnt=0;
+    threadParams_t *threadParams = (threadParams_t *)threadp;
+
+    gettimeofday(&current_time_val, (struct timezone *)0);
+    // syslog(LOG_CRIT, "Sequencer thread @ sec=%d, msec=%d\n", (int)(current_time_val.tv_sec-start_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
+    // printf("Sequencer thread @ sec=%d, msec=%d\n", (int)(current_time_val.tv_sec-start_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
+
+    do
+    {
+        delay_cnt=0; residual=0.0;
+
+        //gettimeofday(&current_time_val, (struct timezone *)0);
+        //syslog(LOG_CRIT, "Sequencer thread prior to delay @ sec=%d, msec=%d\n", (int)(current_time_val.tv_sec-start_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
+        do
+        {
+            rc=nanosleep(&delay_time, &remaining_time);
+
+            if(rc == EINTR)
+            { 
+                residual = remaining_time.tv_sec + ((double)remaining_time.tv_nsec / (double)NANOSEC_PER_SEC);
+
+                if(residual > 0.0) printf("residual=%lf, sec=%d, nsec=%d\n", residual, (int)remaining_time.tv_sec, (int)remaining_time.tv_nsec);
+ 
+                delay_cnt++;
+            }
+            else if(rc < 0)
+            {
+                perror("Sequencer nanosleep");
+                exit(-1);
+            }
+           
+        } while((residual > 0.0) && (delay_cnt < 100));
+
+        seqCnt++;
+        gettimeofday(&current_time_val, (struct timezone *)0);
+        syslog(LOG_CRIT, "Sequencer cycle %llu @ sec=%d, msec=%d\n", seqCnt, (int)(current_time_val.tv_sec-prev_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
+        prev_time_val = current_time_val;
+
+        if(delay_cnt > 1) printf("Sequencer looping delay %d\n", delay_cnt);
+
+
+        // Release each service at a sub-rate of the generic sequencer rate
+
+        // Servcie_1 = RT_MAX-1	@ 1 Hz
+        if((seqCnt % 1) == 0) sem_post(&semS1);
+
+        // Service_2 = RT_MAX-2	@ 1 Hz
+        if((seqCnt % 1) == 0) sem_post(&semS2);
+
+    } while(!abortTest && (seqCnt < total_frames));
+
+    sem_post(&semS1); 
+    sem_post(&semS2);
+    abortS1=TRUE;
+     abortS2=TRUE; 
+    pthread_exit((void *)0);
+
 }

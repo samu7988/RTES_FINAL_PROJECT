@@ -300,6 +300,11 @@ int main(int argc, char** argv)
 		printf("Image store thread success\n");
     }
 
+  //Join threads
+	for(int i=0;i<NUM_THREADS;i++)
+	{
+		pthread_join(threads[i], NULL);
+	}
     return 0;
 }
 
