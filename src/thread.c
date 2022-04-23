@@ -156,7 +156,7 @@ void* Sequencer(void* params)
     double residual;
     int rc, delay_cnt=0;
     unsigned long long seqCnt=0;
-    threadParams_t *threadParams = (threadParams_t *)threadp;
+    threadParams_t *threadParams = (threadParams_t *)params;
 
     gettimeofday(&current_time_val, (struct timezone *)0);
     // syslog(LOG_CRIT, "Sequencer thread @ sec=%d, msec=%d\n", (int)(current_time_val.tv_sec-start_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
@@ -208,8 +208,8 @@ void* Sequencer(void* params)
 
     sem_post(&semS1); 
     sem_post(&semS2);
-    abortS1=TRUE;
-     abortS2=TRUE; 
+    abortS1=1;
+     abortS2=1; 
     pthread_exit((void *)0);
 
 }
