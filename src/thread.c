@@ -64,10 +64,11 @@ void* Image_capture_thread(void* params)
         printf("\n\rImage capture start");
 
         get_timestamp(&start_time); //get start time
-
+        printf("\n\rStart time %lf",start_time);
         mainloop(); //Read frame and convert it to RGB
 
         get_timestamp(&end_time); //get end time
+        printf("\n\r Stop time %lf",stop_time);
 
         frame_number++;
 
