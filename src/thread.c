@@ -60,6 +60,7 @@ void* Image_capture_thread(void* params)
     unsigned long frame_number = 0;
     while(!abortS1)
     {
+        printf("\n\rWaitinf for semaphore s1");
         sem_wait(&semS1);
         printf("\n\rImage capture start");
 
