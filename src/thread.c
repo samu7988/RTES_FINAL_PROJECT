@@ -15,6 +15,7 @@
 /****************************************************************************************
 *					HEADER FILE SECTION
 *****************************************************************************************/
+#include <stdio.h>
 
 /**************************************************************************************
 *					GLOBAL VARIABLE
@@ -32,28 +33,28 @@
  *
  * @return 
  *********************************************************************************************/
-void* Socket_thread(void* )
+void* Socket_thread(void* params)
 {
     printf("\n\rSocket thread run");
 }
 
-void* Image_dump_thread(void* )
+void* Image_dump_thread(void* params)
 {
     printf("\n\rImage dump thread run");
 }
 
-void* Image_capture_thread(void* )
+void* Image_capture_thread(void* params)
 {
     printf("\n\rImage capture thread run");
 }
 
 
-void* Image_store_thread(void* )
+void* Image_store_thread(void* params)
 {
     printf("\n\rImage store thread run");
 }
 
-void* Sequencer(void* )
+void* Sequencer(void* params)
 {
     printf("\n\rSequencer thread run");
 }
