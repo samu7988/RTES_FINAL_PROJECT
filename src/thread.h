@@ -15,8 +15,19 @@
 /****************************************************************************************
 *					HEADER FILE SECTION
 *****************************************************************************************/
-
-
+#include <sys/time.h>
+#include <time.h>
+#include <semaphore.h>
+#include <syslog.h>
+#include <pthread.h>
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <assert.h>
+#include <string.h>
+#include <unistd.h>
+#include <linux/videodev2.h>
 /****************************************************************************************
 *				     MACROS AND ENUMS
 *****************************************************************************************/
