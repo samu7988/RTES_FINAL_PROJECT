@@ -62,21 +62,21 @@ void* Image_dump_thread(void* params)
     unsigned long frame_dump_cnt = 0;
     while(frame_dump_cnt < total_frames)
     {
-        printf("\n\rWaiting for semaphore s3");
+        // printf("\n\rWaiting for semaphore s3");
         sem_wait(&semS3);
-        printf("\n\rImage dump start");
+        // printf("\n\rImage dump start");
 
         get_timestamp(&start_time); //get start time
-        printf("\n\rStart time %lf",start_time);
+        // printf("\n\rStart time %lf",start_time);
 
         //dump_ppm( (image_store + (frame_dump_cnt % 60)), ((size_of_image*6)/4), frame_dump_cnt, &frame_time);
 
 
         get_timestamp(&end_time); //get end time
-        printf("\n\r Stop time %lf",end_time);
+        // printf("\n\r Stop time %lf",end_time);
 
         frame_dump_cnt++;
-        printf("\n\rImage dump end");
+        // printf("\n\rImage dump end");
     }
 
     pthread_exit((void *)0);
@@ -89,16 +89,16 @@ void* Image_capture_thread(void* params)
     unsigned long frame_number = 0;
     while(!abortS1)
     {
-        printf("\n\rWaitinf for semaphore s1");
+       // printf("\n\rWaitinf for semaphore s1");
         sem_wait(&semS1);
-        printf("\n\rImage capture start");
+        //printf("\n\rImage capture start");
 
         get_timestamp(&start_time); //get start time
-        printf("\n\rStart time %lf",start_time);
+       // printf("\n\rStart time %lf",start_time);
        // mainloop(); //Read frame and convert it to RGB
 
         get_timestamp(&end_time); //get end time
-        printf("\n\r Stop time %lf",end_time);
+        //printf("\n\r Stop time %lf",end_time);
 
         frame_number++;
 
@@ -107,7 +107,7 @@ void* Image_capture_thread(void* params)
             break;
         }
 
-        printf("\n\rImage capture end");
+       // printf("\n\rImage capture end");
     }
 
     pthread_exit((void *)0);
@@ -121,12 +121,12 @@ void* Image_store_thread(void* params)
     unsigned long frame_store_cnt = 0;
     while(frame_store_cnt < total_frames)
     {
-        printf("\n\rWaiting for semaphore s2");
+        //printf("\n\rWaiting for semaphore s2");
         sem_wait(&semS2);
-        printf("\n\rImage store start");
+        //printf("\n\rImage store start");
 
         get_timestamp(&start_time); //get start time
-        printf("\n\rStart time %lf",start_time);
+      //  printf("\n\rStart time %lf",start_time);
 
         //Copy image from Big buffer into circular buffer(big buffer is populated in image capture thread) 
 		// for(int i=0;i<(640*480*3);i++)
@@ -135,12 +135,12 @@ void* Image_store_thread(void* params)
 		// }
 
         get_timestamp(&end_time); //get end time
-        printf("\n\r Stop time %lf",end_time);
+       // printf("\n\r Stop time %lf",end_time);
 
         frame_store_cnt++;
         sem_post(&semS3);
 
-        printf("\n\rImage store end");
+       // printf("\n\rImage store end");
     }
 
     pthread_exit((void *)0);
@@ -191,6 +191,7 @@ void* Sequencer(void* params)
         seqCnt++;
         gettimeofday(&current_time_val, (struct timezone *)0);
         syslog(LOG_CRIT, "Sequencer cycle %llu @ sec=%d, msec=%d\n", seqCnt, (int)(current_time_val.tv_sec-prev_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
+        printf( "Sequencer cycle %llu @ sec=%d, msec=%d\n", seqCnt, (int)(current_time_val.tv_sec-prev_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
         prev_time_val = current_time_val;
 
         if(delay_cnt > 1) printf("Sequencer looping delay %d\n", delay_cnt);
