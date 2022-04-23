@@ -16,11 +16,12 @@
 *					HEADER FILE SECTION
 *****************************************************************************************/
 #include <stdio.h>
-
+#include "thread.h"
+#include "v4l2_driver.h"
 /**************************************************************************************
 *					GLOBAL VARIABLE
 *******************************************************************************************/
-
+ew
 /**********************************************************************************
 *				FUNCTION DEFINITION
 ***************************************************************************************/
@@ -33,6 +34,15 @@
  *
  * @return 
  *********************************************************************************************/
+
+void get_timestamp(double *timestamp)
+{
+    struct timespec timeval;
+    clock_gettime(CLOCK_REALTIME,&time_val);
+    *timestamp = ((double)time_val.tv_sec + (double)((time_val.tv_nsec)/(double)1000000000));
+}
+
+
 void* Socket_thread(void* params)
 {
     printf("\n\rSocket thread run");
@@ -46,6 +56,29 @@ void* Image_dump_thread(void* params)
 void* Image_capture_thread(void* params)
 {
     printf("\n\rImage capture thread run");
+    double start_time,end_time;
+    while(!abortS1)
+    {
+        sem_wait(&semS1);
+        printf("\n\rImage capture start");
+
+        get_timestamp(&start_time); //get start time
+
+        mainloop(); //Read frame and convert it to RGB
+
+        get_timestamp(&end_time); //get end time
+
+        frame_number++;
+
+        if(frame_number == total_frames)
+        {
+            break;
+        }
+
+        printf("\n\rImage capture end");
+    }
+
+    pthread_exit((void *)0);
 }
 
 
