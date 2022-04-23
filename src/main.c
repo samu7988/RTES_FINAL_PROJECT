@@ -79,7 +79,6 @@ int main(int argc, char** argv)
     printf("Release:    %s\n",system_info.release);
     printf("Version:    %s\n",system_info.version);
     printf("machine:    %s\n",system_info.machine);
-    printf("Domain name:%s\n",system_info.domainname);
 
     return 0;
 }
