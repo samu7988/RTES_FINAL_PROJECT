@@ -17,6 +17,10 @@
 *****************************************************************************************/
 #define _GNU_SOURCE
 
+#include<stdint.h>
+#include <sys/utsname.h>
+#include <sys/sysinfo.h>
+#include <sched.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -30,7 +34,6 @@
 #include <sys/time.h>
 #include <sys/sysinfo.h>
 #include <errno.h>
-
 
 #define HORIZONTAL_RES (640)
 #define VERTICAL_RES   (480)
