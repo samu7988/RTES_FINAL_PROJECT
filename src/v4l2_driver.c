@@ -67,10 +67,11 @@
 
 #include <time.h>
 #include "v4l2_driver.h"
-
 #define CLEAR(x) memset(&(x), 0, sizeof(x))
 #define COLOR_CONVERT
 
+#define HRES_STR "320"
+#define VRES_STR "240"
 
 // Format is used by a number of functions, so made as a file global
 static struct v4l2_format fmt;
@@ -117,7 +118,7 @@ static int              frame_count = 30;
         return r;
 }
 
-char ppm_header[]="P6\n#9999999999 sec 9999999999 msec \n"HORIZONTAL_RES_STR" "VERTICAL_RES_STR"\n255\n";
+char ppm_header[]="P6\n#9999999999 sec 9999999999 msec \n"HRES_STR" "VRES_STR"\n255\n";
 char ppm_dumpname[]="test00000000.ppm";
 
  void dump_ppm(const void *p, int size, unsigned int tag, struct timespec *time)
@@ -131,7 +132,7 @@ char ppm_dumpname[]="test00000000.ppm";
     snprintf(&ppm_header[4], 11, "%010d", (int)time->tv_sec);
     strcat(&ppm_header[14], " sec ");
     snprintf(&ppm_header[19], 11, "%010d", (int)((time->tv_nsec)/1000000));
-    strcat(&ppm_header[29], " msec \n"HORIZONTAL_RES_STR" "VERTICAL_RES_STR"\n255\n");
+    strcat(&ppm_header[29], " msec \n"HRES_STR" "VRES_STR"\n255\n");
     written=write(dumpfd, ppm_header, sizeof(ppm_header));
 
     total=0;
@@ -149,7 +150,7 @@ char ppm_dumpname[]="test00000000.ppm";
 }
 
 
-char pgm_header[]="P5\n#9999999999 sec 9999999999 msec \n"HORIZONTAL_RES_STR" "VERTICAL_RES_STR"\n255\n";
+char pgm_header[]="P5\n#9999999999 sec 9999999999 msec \n"HRES_STR" "VRES_STR"\n255\n";
 char pgm_dumpname[]="test00000000.pgm";
 
  void dump_pgm(const void *p, int size, unsigned int tag, struct timespec *time)
@@ -163,7 +164,7 @@ char pgm_dumpname[]="test00000000.pgm";
     snprintf(&pgm_header[4], 11, "%010d", (int)time->tv_sec);
     strcat(&pgm_header[14], " sec ");
     snprintf(&pgm_header[19], 11, "%010d", (int)((time->tv_nsec)/1000000));
-    strcat(&pgm_header[29], " msec \n"HORIZONTAL_RES_STR" "VERTICAL_RES_STR"\n255\n");
+    strcat(&pgm_header[29], " msec \n"HRES_STR" "VRES_STR"\n255\n");
     written=write(dumpfd, pgm_header, sizeof(pgm_header));
 
     total=0;
