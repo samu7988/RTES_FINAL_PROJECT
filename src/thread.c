@@ -239,7 +239,7 @@ void* Sequencer(void* params)
         abortS2=1; 
         pthread_exit((void *)0);
     }
-	else if(freq_img_capture == 10)
+	else if(freq == 10)
 	{
 		struct timeval current_time_val;		//To store the current time value
 		struct timespec remaining_time;		
@@ -288,7 +288,7 @@ void* Sequencer(void* params)
 
 				if(rc == EINTR)
 				{
-					residual = remaining_time.tv_sec + ((double)remaining_time.tv_nsec / (double)NSEC_PER_SEC);
+					residual = remaining_time.tv_sec + ((double)remaining_time.tv_nsec / (double)NANOSEC_PER_SEC);
 
 					if(residual > 0.0) printf("residual=%lf, sec=%d, nsec=%d\n", residual, (int)remaining_time.tv_sec, (int)remaining_time.tv_nsec);
 
@@ -305,7 +305,7 @@ void* Sequencer(void* params)
 			//seqCnt++;
 
 			/* Calculate Start time */
-            clock_gettime(CLOCK_REALTIME,&sequencer_start_time);
+            // clock_gettime(CLOCK_REALTIME,&sequencer_start_time);
 
 
 
@@ -326,7 +326,7 @@ void* Sequencer(void* params)
 			// Service_3 = RT_MAX-3	@ 1 Hz
 			//if((seqCnt % 1) == 0) sem_post(&semS3);
 
-			clock_gettime(CLOCK_REALTIME, &sequencer_end_time);
+			// clock_gettime(CLOCK_REALTIME, &sequencer_end_time);
                         
 	
 
@@ -339,7 +339,7 @@ void* Sequencer(void* params)
 		sem_post(&semS1);	//Sem post service 1 (image capture)
 		sem_post(&semS2);	//Sem post service 2 (image dump)
 		//sem_post(&semS3);	//Sem post service 3 (send image via socket)
-		abortS1=TRUE;		//abort service 1
+		abortS1=1;		//abort service 1
 		//abortS2=TRUE;		//abort service 2
 		//abortS3=TRUE;		//abort service 3
 
