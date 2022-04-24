@@ -95,17 +95,17 @@ void* Image_capture_thread(void* params)
     printf("\n\rImage capture thread run");
     double start_time,end_time;
     unsigned long frame_number = 0;
-    image_cap_start_time_buffer = malloc(sizeof(double) * total_frames);
+    double* image_cap_start_time_buffer = malloc(sizeof(double) * total_frames);
     if(image_cap_start_time_buffer == NULL)
     {
         printf("\n\rimage_cap_start_time_buffer failed");
     }
-    image_cap_end_time_buffer = malloc(sizeof(double) * total_frames);
+    double* image_cap_end_time_buffer = malloc(sizeof(double) * total_frames);
     if(image_cap_end_time_buffer == NULL)
     {
         printf("\n\rimage_cap_end_time_buffer failed");
     }
-    image_cap_execution_time_buffer = malloc(sizeof(double) * total_frames);
+    double* image_cap_execution_time_buffer = malloc(sizeof(double) * total_frames);
     if(image_cap_execution_time_buffer == NULL)
     {
         printf("\n\rimage_cap_execution_time_buffer failed");
