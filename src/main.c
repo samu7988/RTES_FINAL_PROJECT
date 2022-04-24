@@ -107,7 +107,7 @@ int main(int argc, char** argv)
 
     if(freq == 1)
     {
-      total_frames = 1800; //This is based upon calculation that in 30 mins, 1800 frames would be captured at 1 Hz
+      total_frames = 60; //This is based upon calculation that in 30 mins, 1800 frames would be captured at 1 Hz
     }
     else if(freq == 10)
     {
@@ -321,7 +321,7 @@ int main(int argc, char** argv)
     free(image_cap_execution_time_buffer);
     free(image_store_start_time_buffer);
     free(image_store_end_time_buffer);
-    free(image_cap_execution_time_buffer);
+    free(image_store_execution_time_buffer);
     free(sequencer_start_time_buffer);
     free(sequencer_end_time_buffer);
     free(sequencer_execution_time_buffer);
