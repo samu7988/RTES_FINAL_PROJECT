@@ -210,7 +210,7 @@ void yuv2rgb(int y, int u, int v, unsigned char *r, unsigned char *g, unsigned c
     {
 
 #if defined(COLOR_CONVERT)
-        printf("Dump YUYV converted to RGB size %d\n", size);
+        printf("\n\rDump YUYV converted to RGB size %d", size);
        
         // Pixels are YU and YV alternating, so YUYV which is 4 bytes
         // We want RGB, so RGBRGB which is 6 bytes
