@@ -47,6 +47,7 @@ void analysis(char* file_name, double* start_time, double* end_time, double* exe
     //Execution time
     double wcet = 0;
     double jitter = 0;
+    int deadline = 1;
     for(int i = 0; i < total_frames ; i++)
     {
         *(execution_time + i) = (*(end_time + i) - *(start_time + i))*1000;
@@ -54,7 +55,9 @@ void analysis(char* file_name, double* start_time, double* end_time, double* exe
         if(*(execution_time + i) > wcet)
         {
             wcet = *(execution_time + i);
+        
         }
+        jitter = (*(start_time + i -1) + deadline) - *(start_time + i);
         fprintf(fptr,"\n%d,%lf,%lf,%lf,%lf",i,*(start_time+i),*(end_time+i),*(execution_time+i),jitter);
 
     }
