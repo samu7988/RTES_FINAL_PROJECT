@@ -28,7 +28,15 @@
 unsigned char image_store[60][640*480*3];
 struct timeval prev_time_val;
 int abortTest=0;
-
+double* image_cap_start_time_buffer = NULL;
+double* image_cap_end_time_buffer = NULL;
+double* image_cap_execution_time_buffer = NULL;
+double* image_store_start_time_buffer = NULL;
+double* image_store_end_time_buffer = NULL;
+double* image_store_execution_time_buffer = NULL;
+double* sequencer_start_time_buffer = NULL;
+double* sequencer_end_time_buffer = NULL;
+double* sequencer_execution_time_buffer = NULL;
 /**********************************************************************************
 *				FUNCTION DEFINITION
 ***************************************************************************************/
@@ -95,17 +103,17 @@ void* Image_capture_thread(void* params)
     printf("\n\rImage capture thread run");
     double start_time,end_time;
     unsigned long frame_number = 0;
-    double* image_cap_start_time_buffer = malloc(sizeof(double) * total_frames);
+    image_cap_start_time_buffer = malloc(sizeof(double) * total_frames);
     if(image_cap_start_time_buffer == NULL)
     {
         printf("\n\rimage_cap_start_time_buffer failed");
     }
-    double* image_cap_end_time_buffer = malloc(sizeof(double) * total_frames);
+    image_cap_end_time_buffer = malloc(sizeof(double) * total_frames);
     if(image_cap_end_time_buffer == NULL)
     {
         printf("\n\rimage_cap_end_time_buffer failed");
     }
-    double* image_cap_execution_time_buffer = malloc(sizeof(double) * total_frames);
+    image_cap_execution_time_buffer = malloc(sizeof(double) * total_frames);
     if(image_cap_execution_time_buffer == NULL)
     {
         printf("\n\rimage_cap_execution_time_buffer failed");
@@ -147,19 +155,19 @@ void* Image_store_thread(void* params)
     printf("\n\rImage store thread run");
     double start_time,end_time;
     unsigned long frame_store_cnt = 0;
-    double* image_store_start_time_buffer = malloc(sizeof(double) * total_frames);
+    image_store_start_time_buffer = malloc(sizeof(double) * total_frames);
     if(image_store_start_time_buffer == NULL)
     {
         printf("\n\rimage_store_start_time_buffer failed");
     }
 
-    double* image_store_end_time_buffer = malloc(sizeof(double) * total_frames);
+    image_store_end_time_buffer = malloc(sizeof(double) * total_frames);
      if(image_store_end_time_buffer == NULL)
     {
         printf("\n\rimage_store_end_time_buffer failed");
     }
 
-    double* image_store_execution_time_buffer = malloc(sizeof(double) * total_frames);
+    image_store_execution_time_buffer = malloc(sizeof(double) * total_frames);
      if(image_store_execution_time_buffer == NULL)
     {
         printf("\n\rimage_store_execution_time_buffer failed");
@@ -199,19 +207,19 @@ void* Image_store_thread(void* params)
 void* Sequencer(void* params)
 {
     printf("\n\rSequencer thread run");
-    double* sequencer_start_time_buffer = malloc(sizeof(double) * total_frames);
+    sequencer_start_time_buffer = malloc(sizeof(double) * total_frames);
     if(sequencer_start_time_buffer == NULL)
     {
         printf("\n\rsequencer_start_time_buffer failed");
     }
     
-    double* sequencer_end_time_buffer = malloc(sizeof(double) * total_frames);
+    sequencer_end_time_buffer = malloc(sizeof(double) * total_frames);
     if(sequencer_end_time_buffer == NULL)
     {
         printf("\n\rsequencer_end_time_buffer failed");
     }
     
-    double* sequencer_execution_time_buffer = malloc(sizeof(double) * total_frames);
+    sequencer_execution_time_buffer = malloc(sizeof(double) * total_frames);
     if(sequencer_execution_time_buffer == NULL)
     {
         printf("\n\rsequencer_execution_time_buffer failed");

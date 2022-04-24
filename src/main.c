@@ -54,7 +54,7 @@ cpu_set_t allcpuset;
 sem_t semS1, semS2, semS3, semS4, semS5, semS6, semS7;
 int abortS1 = 0;
 int abortS2 = 0;
-
+uint8_t freq = 1;
 int total_frames = 0;
 char ppm_header[200];
 /**********************************************************************************
@@ -91,7 +91,7 @@ int main(int argc, char** argv)
         exit(0);
     }
 
-    uint8_t freq = atoi(argv[1]);
+    freq = atoi(argv[1]);
     if(freq != 1 && freq != 10)
     {
         printf("\n\rInvalid input: Frequency should either be 1Hz or 10 Hz");
