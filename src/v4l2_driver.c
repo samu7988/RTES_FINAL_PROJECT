@@ -321,11 +321,12 @@ void yuv2rgb(int y, int u, int v, unsigned char *r, unsigned char *g, unsigned c
 
         if (read_frame())
         {
-        if(nanosleep(&read_delay, &time_error) != 0)
-                perror("nanosleep");
-        else
-                // printf("\n\rtime_error.tv_sec=%ld, time_error.tv_nsec=%ld\n", time_error.tv_sec, time_error.tv_nsec);
-
+                if(nanosleep(&read_delay, &time_error) != 0)
+                        perror("nanosleep");
+                else
+                {
+                        // printf("\n\rtime_error.tv_sec=%ld, time_error.tv_nsec=%ld\n", time_error.tv_sec, time_error.tv_nsec);
+                }
         }
 
 }
