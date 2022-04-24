@@ -36,7 +36,7 @@
 #include <errno.h>
 #include "v4l2_driver.h"
 #include "thread.h"
-
+#include "analysis.h"
 #define NUM_CPU_CORES (1)
 #define NUM_THREADS	(4 + 1)
 
@@ -309,7 +309,13 @@ int main(int argc, char** argv)
   	stop_capturing();	//Stop Capturing images
 	  uninit_device();	// Free resources allocated for use of this application
 	  close_device();		// Close the device
-
+    
+    //analyse
+    write_seq_csv();
+    write_img_cap_csv();
+    write_img_store_csv();
+    
+    //free buffer
     free(image_cap_start_time_buffer);
     free(image_cap_end_time_buffer);
     free(image_cap_execution_time_buffer);
