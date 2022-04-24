@@ -72,12 +72,12 @@ void* Image_dump_thread(void* params)
         // printf("\n\rImage dump start");
 
         get_timestamp(&start_time); //get start time
-        // printf("\n\rStart time %lf",start_time);
+        printf("\n\r[Thread3]Start time %lf",start_time);
 
         //dump_ppm( (image_store + (frame_dump_cnt % 60)), ((size_of_image*6)/4), frame_dump_cnt, &frame_time);
 
 
-        get_timestamp(&end_time); //get end time
+        // get_timestamp(&end_time); //get end time
         // printf("\n\r Stop time %lf",end_time);
 
         frame_dump_cnt++;
@@ -99,7 +99,7 @@ void* Image_capture_thread(void* params)
         //printf("\n\rImage capture start");
 
         get_timestamp(&start_time); //get start time
-       printf("\n\rStart time %lf",start_time);
+       printf("\n\r[Thread1]Start time %lf",start_time);
        // mainloop(); //Read frame and convert it to RGB
 
         //get_timestamp(&end_time); //get end time
@@ -131,7 +131,7 @@ void* Image_store_thread(void* params)
         //printf("\n\rImage store start");
 
         get_timestamp(&start_time); //get start time
-      //  printf("\n\rStart time %lf",start_time);
+       printf("\n\r[Thread2]Start time %lf",start_time);
 
         //Copy image from Big buffer into circular buffer(big buffer is populated in image capture thread) 
 		// for(int i=0;i<(640*480*3);i++)
@@ -139,7 +139,7 @@ void* Image_store_thread(void* params)
 		// 	image_store[frame_store_cnt % 60][i] = bigbuffer[i];
 		// }
 
-        get_timestamp(&end_time); //get end time
+        // get_timestamp(&end_time); //get end time
        // printf("\n\r Stop time %lf",end_time);
 
         frame_store_cnt++;
