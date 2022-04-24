@@ -212,7 +212,7 @@ void* Sequencer(void* params)
        // syslog(LOG_CRIT, "Sequencer cycle %llu @ sec=%d, msec=%d\n", seqCnt, (int)(current_time_val.tv_sec-prev_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
         
         #ifdef SEQ_DEBUG
-        printf( "[Sequencer] Start time %lf", ((double)current_time_val.tv_sec + (double)(current_time_val.tv_usec/USEC_PER_MSEC)));
+        printf( "\n\r[Sequencer] Start time %lf", ((double)current_time_val.tv_sec + (double)(current_time_val.tv_usec/USEC_PER_MSEC)));
         #endif
 
         if(delay_cnt > 1)
