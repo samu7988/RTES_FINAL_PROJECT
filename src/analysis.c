@@ -49,7 +49,7 @@ void analysis(char* file_name, double* start_time, double* end_time, double* exe
     double jitter = 0;
     for(int i = 0; i < total_frames ; i++)
     {
-        *(execution_time + i) = *(end_time) - *(start_time);
+        *(execution_time + i) = (*(end_time + i) - *(start_time + i)*)*1000;
 
         if(*(execution_time + i) > wcet)
         {
