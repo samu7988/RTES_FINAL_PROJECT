@@ -337,7 +337,7 @@ void* Sequencer(void* params)
 
 				else
 				{
-					set_time.tv_nsec += 100000000;
+					set_time.tv_nsec += 100000000; //set time for 200ms sleeo
 				}
 
 
@@ -369,10 +369,10 @@ void* Sequencer(void* params)
 
 			// Release each service at a sub-rate of the generic sequencer rate
 
-			// Servcie_1 = RT_MAX-1	@ 1 Hz
+			// Servcie_1 
 			if((seqCnt % 1) == 0) sem_post(&semS1);
 
-			// Service_2 = RT_MAX-2	@ 1 Hz
+			// Service_2 
 			if((seqCnt % 1) == 0) sem_post(&semS2);
 
             get_timestamp(&end_time);
