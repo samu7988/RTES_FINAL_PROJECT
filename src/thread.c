@@ -250,7 +250,7 @@ void* Sequencer(void* params)
 		double residual;
 		int rc, delay_cnt=0;
 		unsigned long long seqCnt=0;
-		threadParams_t *threadParams = (threadParams_t *)threadp;
+		threadParams_t *threadParams = (threadParams_t *)params;
 
 		int i = 1;
 		do
