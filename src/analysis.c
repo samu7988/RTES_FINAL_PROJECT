@@ -58,7 +58,7 @@ void analysis(char* file_name, double* start_time, double* end_time, double* exe
         fprintf(fptr,"\n%d,%lf,%lf,%lf,%lf",i,*(start_time+i),*(end_time+i),*(execution_time+i),jitter);
 
     }
-        fprintf("WCET:%lf",wcet);
+    fprintf(fptr,"WCET:%lf",wcet);
     //Jitter
     
 
