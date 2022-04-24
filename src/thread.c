@@ -161,78 +161,188 @@ void* Image_store_thread(void* params)
 void* Sequencer(void* params)
 {
     printf("\n\rSequencer thread run");
-    struct timeval current_time_val;
-    struct timespec delay_time = {0,999999999};//{0,100000000}; // delay for 1000 msec, 1 Hz
-    struct timespec remaining_time;
-    struct timespec set_time_1hz;		
-	struct timespec reference_time_1hz;	
-    double current_time;
-    double residual;
-    int rc, delay_cnt=0;
-    unsigned long long seqCnt=0;
-    threadParams_t *threadParams = (threadParams_t *)params;
 
-    // syslog(LOG_CRIT, "Sequencer thread @ sec=%d, msec=%d\n", (int)(current_time_val.tv_sec-start_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
-    // printf("Sequencer thread @ sec=%d, msec=%d\n", (int)(current_time_val.tv_sec-start_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
-    int j =1;
-    clock_gettime(CLOCK_REALTIME, &reference_time_1hz);
-    set_time_1hz = reference_time_1hz;
-    do
+    if(freq == 1)
     {
-        delay_cnt=0; residual=0.0;
+        struct timeval current_time_val;
+        struct timespec delay_time = {0,999999999};//{0,100000000}; // delay for 1000 msec, 1 Hz
+        struct timespec remaining_time;
+        struct timespec set_time_1hz;		
+        struct timespec reference_time_1hz;	
+        double current_time;
+        double residual;
+        int rc, delay_cnt=0;
+        unsigned long long seqCnt=0;
+        threadParams_t *threadParams = (threadParams_t *)params;
 
-        //gettimeofday(&current_time_val, (struct timezone *)0);
-        //syslog(LOG_CRIT, "Sequencer thread prior to delay @ sec=%d, msec=%d\n", (int)(current_time_val.tv_sec-start_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
+        // syslog(LOG_CRIT, "Sequencer thread @ sec=%d, msec=%d\n", (int)(current_time_val.tv_sec-start_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
+        // printf("Sequencer thread @ sec=%d, msec=%d\n", (int)(current_time_val.tv_sec-start_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
+        int j =1;
+        clock_gettime(CLOCK_REALTIME, &reference_time_1hz);
+        set_time_1hz = reference_time_1hz;
         do
         {
+            delay_cnt=0; residual=0.0;
 
-				set_time_1hz.tv_sec +=1;
-
-				clock_nanosleep(CLOCK_REALTIME, TIMER_ABSTIME, &set_time_1hz, NULL);
-
-            if(rc == EINTR)
-            { 
-                residual = remaining_time.tv_sec + ((double)remaining_time.tv_nsec / (double)NANOSEC_PER_SEC);
-
-                if(residual > 0.0) printf("residual=%lf, sec=%d, nsec=%d\n", residual, (int)remaining_time.tv_sec, (int)remaining_time.tv_nsec);
- 
-                delay_cnt++;
-            }
-            else if(rc < 0)
+            //gettimeofday(&current_time_val, (struct timezone *)0);
+            //syslog(LOG_CRIT, "Sequencer thread prior to delay @ sec=%d, msec=%d\n", (int)(current_time_val.tv_sec-start_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
+            do
             {
-                perror("Sequencer nanosleep");
-                exit(-1);
+
+                    set_time_1hz.tv_sec +=1;
+
+                    clock_nanosleep(CLOCK_REALTIME, TIMER_ABSTIME, &set_time_1hz, NULL);
+
+                if(rc == EINTR)
+                { 
+                    residual = remaining_time.tv_sec + ((double)remaining_time.tv_nsec / (double)NANOSEC_PER_SEC);
+
+                    if(residual > 0.0) printf("residual=%lf, sec=%d, nsec=%d\n", residual, (int)remaining_time.tv_sec, (int)remaining_time.tv_nsec);
+    
+                    delay_cnt++;
+                }
+                else if(rc < 0)
+                {
+                    perror("Sequencer nanosleep");
+                    exit(-1);
+                }
+            
+            } while((residual > 0.0) && (delay_cnt < 100));
+
+            seqCnt++;
+            gettimeofday(&current_time_val, (struct timezone *)0);
+        // syslog(LOG_CRIT, "Sequencer cycle %llu @ sec=%d, msec=%d\n", seqCnt, (int)(current_time_val.tv_sec-prev_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
+            
+            #ifdef SEQ_DEBUG
+            printf( "\n\r[Sequencer] Start time %lf, frame count %d", ((double)current_time_val.tv_sec + (double)(current_time_val.tv_usec/USEC_PER_MSEC)),seqCnt);
+            #endif
+
+            if(delay_cnt > 1)
+            {
+                printf("Sequencer looping delay %d\n", delay_cnt);
             }
-           
-        } while((residual > 0.0) && (delay_cnt < 100));
 
-        seqCnt++;
-        gettimeofday(&current_time_val, (struct timezone *)0);
-       // syslog(LOG_CRIT, "Sequencer cycle %llu @ sec=%d, msec=%d\n", seqCnt, (int)(current_time_val.tv_sec-prev_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
-        
-        #ifdef SEQ_DEBUG
-        printf( "\n\r[Sequencer] Start time %lf, frame count %d", ((double)current_time_val.tv_sec + (double)(current_time_val.tv_usec/USEC_PER_MSEC)),seqCnt);
-        #endif
+            // Release each service at a sub-rate of the generic sequencer rate
 
-        if(delay_cnt > 1)
-        {
-            printf("Sequencer looping delay %d\n", delay_cnt);
-        }
+            // Servcie_1 = RT_MAX-1	@ 1 Hz
+            if((seqCnt % 1) == 0) sem_post(&semS1);
 
-        // Release each service at a sub-rate of the generic sequencer rate
+            // Service_2 = RT_MAX-2	@ 1 Hz
+            if((seqCnt % 1) == 0) sem_post(&semS2);
 
-        // Servcie_1 = RT_MAX-1	@ 1 Hz
-        if((seqCnt % 1) == 0) sem_post(&semS1);
+        } while(!abortTest && (seqCnt < total_frames));
 
-        // Service_2 = RT_MAX-2	@ 1 Hz
-        if((seqCnt % 1) == 0) sem_post(&semS2);
+        sem_post(&semS1); 
+        sem_post(&semS2);
+        abortS1=1;
+        abortS2=1; 
+        pthread_exit((void *)0);
+    }
+	else if(freq_img_capture == 10)
+	{
+		struct timeval current_time_val;		//To store the current time value
+		struct timespec remaining_time;		
+		struct timespec measure_time;
+		struct timespec reference_time;		//To store the reference time at which sequencer starts
+		struct timespec set_time;			//To store time for clock_nanosleep()
+		double current_time;
+		double residual;
+		int rc, delay_cnt=0;
+		unsigned long long seqCnt=0;
+		threadParams_t *threadParams = (threadParams_t *)threadp;
 
-    } while(!abortTest && (seqCnt < total_frames));
+		int i = 1;
+		do
+		{
+			delay_cnt=0; residual=0.0;
 
-    sem_post(&semS1); 
-    sem_post(&semS2);
-     abortS1=1;
-     abortS2=1; 
-    pthread_exit((void *)0);
+			do
+			{
+				//syslog(LOG_INFO,"SEQUENCER");
+				if(i == 1)
+				{
+					clock_gettime(CLOCK_REALTIME, &reference_time);
+					set_time = reference_time;
+					syslog(LOG_INFO,"REFERENCE TIME: %lf seconds\n",((double)reference_time.tv_sec + (double)((reference_time.tv_nsec)/(double)1000000000)));
+					i++;
+				}
+
+				/* Wrap around condition */
+				if(set_time.tv_nsec > 900000000)
+				{
+					set_time.tv_sec++;
+					set_time.tv_nsec = set_time.tv_nsec - 900000000;
+				}
+
+				else
+				{
+					set_time.tv_nsec += 100000000;
+				}
+
+
+				clock_nanosleep(CLOCK_REALTIME, TIMER_ABSTIME, &set_time, NULL);
+
+
+
+
+				if(rc == EINTR)
+				{
+					residual = remaining_time.tv_sec + ((double)remaining_time.tv_nsec / (double)NSEC_PER_SEC);
+
+					if(residual > 0.0) printf("residual=%lf, sec=%d, nsec=%d\n", residual, (int)remaining_time.tv_sec, (int)remaining_time.tv_nsec);
+
+					delay_cnt++;
+				}
+				else if(rc < 0)
+				{
+					perror("Sequencer nanosleep");
+					exit(-1);
+				}
+
+			} while((residual > 0.0) && (delay_cnt < 100));
+
+			//seqCnt++;
+
+			/* Calculate Start time */
+            clock_gettime(CLOCK_REALTIME,&sequencer_start_time);
+
+
+
+            // syslog(LOG_INFO,"SEQ Count: %lld\t Sequencer start Time: %lf seconds\n",seqCnt,start_time);
+
+
+			if(delay_cnt > 1) printf("Sequencer looping delay %d\n", delay_cnt);
+
+
+			// Release each service at a sub-rate of the generic sequencer rate
+
+			// Servcie_1 = RT_MAX-1	@ 1 Hz
+			if((seqCnt % 1) == 0) sem_post(&semS1);
+
+			// Service_2 = RT_MAX-2	@ 1 Hz
+			if((seqCnt % 1) == 0) sem_post(&semS2);
+
+			// Service_3 = RT_MAX-3	@ 1 Hz
+			//if((seqCnt % 1) == 0) sem_post(&semS3);
+
+			clock_gettime(CLOCK_REALTIME, &sequencer_end_time);
+                        
+	
+
+            seqCnt++;       //Increment the sequencer count
+
+
+
+		} while(!abortTest && (seqCnt < (total_frames)));
+
+		sem_post(&semS1);	//Sem post service 1 (image capture)
+		sem_post(&semS2);	//Sem post service 2 (image dump)
+		//sem_post(&semS3);	//Sem post service 3 (send image via socket)
+		abortS1=TRUE;		//abort service 1
+		//abortS2=TRUE;		//abort service 2
+		//abortS3=TRUE;		//abort service 3
+
+		pthread_exit((void *)0);	//exit sequencer
+	}
 
 }
