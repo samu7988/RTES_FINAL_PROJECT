@@ -168,6 +168,8 @@ void* Sequencer(void* params)
     // syslog(LOG_CRIT, "Sequencer thread @ sec=%d, msec=%d\n", (int)(current_time_val.tv_sec-start_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
     // printf("Sequencer thread @ sec=%d, msec=%d\n", (int)(current_time_val.tv_sec-start_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
     int j =1;
+    clock_gettime(CLOCK_REALTIME, &reference_time_1hz);
+    set_time_1hz = reference_time_1hz;
     do
     {
         delay_cnt=0; residual=0.0;
@@ -176,13 +178,7 @@ void* Sequencer(void* params)
         //syslog(LOG_CRIT, "Sequencer thread prior to delay @ sec=%d, msec=%d\n", (int)(current_time_val.tv_sec-start_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
         do
         {
-            if(j == 1)
-				{
-					clock_gettime(CLOCK_REALTIME, &reference_time_1hz);
-					set_time_1hz = reference_time_1hz;
-					syslog(LOG_INFO,"REFERENCE TIME: %lf seconds\n",((double)reference_time_1hz.tv_sec + (double)((reference_time_1hz.tv_nsec)/(double)1000000000)));
-					j++;
-				}
+
 
 
 				set_time_1hz.tv_sec +=1;
