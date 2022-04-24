@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include "thread.h"
 #include "v4l2_driver.h"
-
+#include <stdlib.h>
 
 #define USEC_PER_MSEC (1000)
 #define NANOSEC_PER_SEC (1000000000)
@@ -28,8 +28,8 @@
 unsigned char image_store[60][640*480*3];
 struct timeval prev_time_val;
 int abortTest=0;
-
 long int freq = 10;
+
 /**********************************************************************************
 *				FUNCTION DEFINITION
 ***************************************************************************************/
@@ -66,6 +66,7 @@ void* Image_dump_thread(void* params)
      printf("\n\rImage dump thread run");
     double start_time,end_time;
     unsigned long frame_dump_cnt = 0;
+
     while(frame_dump_cnt < total_frames)
     {
         // printf("\n\rWaiting for semaphore s3");
@@ -95,6 +96,22 @@ void* Image_capture_thread(void* params)
     printf("\n\rImage capture thread run");
     double start_time,end_time;
     unsigned long frame_number = 0;
+    image_cap_start_time_buffer = malloc(sizeof(double) * total_frames);
+    if(image_cap_start_time_buffer == NULL)
+    {
+        printf("\n\rimage_cap_start_time_buffer failed");
+    }
+    image_cap_end_time_buffer = malloc(sizeof(double) * total_frames);
+    if(image_cap_end_time_buffer == NULL)
+    {
+        printf("\n\rimage_cap_end_time_buffer failed");
+    }
+    image_cap_execution_time_buffer = malloc(sizeof(double) * total_frames);
+    if(image_cap_execution_time_buffer == NULL)
+    {
+        printf("\n\rimage_cap_execution_time_buffer failed");
+    }
+
     while(!abortS1)
     {
        // printf("\n\rWaitinf for semaphore s1");
@@ -102,12 +119,14 @@ void* Image_capture_thread(void* params)
         //printf("\n\rImage capture start");
 
         get_timestamp(&start_time); //get start time
+        *(image_cap_start_time_buffer + frame_number) = start_time; 
        #ifdef IMG_CAP_DBG
        printf("\n\r[Thread1]   Start time %lf",start_time);
        #endif
        mainloop(); //Read frame and convert it to RGB
 
-        //get_timestamp(&end_time); //get end time
+       get_timestamp(&end_time); //get end time
+       *(image_cap_end_time_buffer + frame_number) = end_time;
         //printf("\n\r Stop time %lf",end_time);
 
         frame_number++;
@@ -129,6 +148,24 @@ void* Image_store_thread(void* params)
     printf("\n\rImage store thread run");
     double start_time,end_time;
     unsigned long frame_store_cnt = 0;
+    double* image_store_start_time_buffer = malloc(sizeof(double) * total_frames);
+    if(image_store_start_time_buffer == NULL)
+    {
+        printf("\n\rimage_store_start_time_buffer failed");
+    }
+
+    double* image_store_end_time_buffer = malloc(sizeof(double) * total_frames);
+     if(image_store_end_time_buffer == NULL)
+    {
+        printf("\n\rimage_store_end_time_buffer failed");
+    }
+
+    double* image_store_execution_time_buffer = malloc(sizeof(double) * total_frames);
+     if(image_store_execution_time_buffer == NULL)
+    {
+        printf("\n\rimage_store_execution_time_buffer failed");
+    }
+
     while(frame_store_cnt < total_frames)
     {
         //printf("\n\rWaiting for semaphore s2");
@@ -136,7 +173,7 @@ void* Image_store_thread(void* params)
         //printf("\n\rImage store start");
 
         get_timestamp(&start_time); //get start time
-
+        *(image_store_start_time_buffer + frame_store_cnt) = start_time;
         #ifdef IMG_STORE_DBG 
         printf("\n\r[Thread2]   Start time %lf",start_time);
         #endif
@@ -147,7 +184,8 @@ void* Image_store_thread(void* params)
 			image_store[frame_store_cnt % 60][i] = bigbuffer[i];
 		}
 
-        // get_timestamp(&end_time); //get end time
+        get_timestamp(&end_time); //get end time
+        *(image_store_end_time_buffer + frame_store_cnt) = end_time;
        // printf("\n\r Stop time %lf",end_time);
 
         frame_store_cnt++;
@@ -162,7 +200,23 @@ void* Image_store_thread(void* params)
 void* Sequencer(void* params)
 {
     printf("\n\rSequencer thread run");
-
+    double* sequencer_start_time_buffer = malloc(sizeof(double) * total_frames);
+    if(sequencer_start_time_buffer == NULL)
+    {
+        printf("\n\rsequencer_start_time_buffer failed");
+    }
+    
+    double* sequencer_end_time_buffer = malloc(sizeof(double) * total_frames);
+    if(sequencer_end_time_buffer == NULL)
+    {
+        printf("\n\rsequencer_end_time_buffer failed");
+    }
+    
+    double* sequencer_execution_time_buffer = malloc(sizeof(double) * total_frames);
+    if(sequencer_execution_time_buffer == NULL)
+    {
+        printf("\n\rsequencer_execution_time_buffer failed");
+    }
     if(freq == 1)
     {
         struct timeval current_time_val;
@@ -170,23 +224,20 @@ void* Sequencer(void* params)
         struct timespec remaining_time;
         struct timespec set_time_1hz;		
         struct timespec reference_time_1hz;	
-        double current_time;
+        double start_time, end_time;
         double residual;
         int rc, delay_cnt=0;
         unsigned long long seqCnt=0;
         threadParams_t *threadParams = (threadParams_t *)params;
 
-        // syslog(LOG_CRIT, "Sequencer thread @ sec=%d, msec=%d\n", (int)(current_time_val.tv_sec-start_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
-        // printf("Sequencer thread @ sec=%d, msec=%d\n", (int)(current_time_val.tv_sec-start_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
         int j =1;
         clock_gettime(CLOCK_REALTIME, &reference_time_1hz);
         set_time_1hz = reference_time_1hz;
         do
         {
             delay_cnt=0; residual=0.0;
-
-            //gettimeofday(&current_time_val, (struct timezone *)0);
-            //syslog(LOG_CRIT, "Sequencer thread prior to delay @ sec=%d, msec=%d\n", (int)(current_time_val.tv_sec-start_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
+            get_timestamp(&start_time); //get start time 
+            *(sequencer_start_time_buffer + seqCnt) = start_time;
             do
             {
 
@@ -209,10 +260,6 @@ void* Sequencer(void* params)
                 }
             
             } while((residual > 0.0) && (delay_cnt < 100));
-
-            seqCnt++;
-            gettimeofday(&current_time_val, (struct timezone *)0);
-        // syslog(LOG_CRIT, "Sequencer cycle %llu @ sec=%d, msec=%d\n", seqCnt, (int)(current_time_val.tv_sec-prev_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
             
             #ifdef SEQ_DEBUG
             printf( "\n\r[Sequencer] Start time %lf, frame count %d", ((double)current_time_val.tv_sec + (double)(current_time_val.tv_usec/USEC_PER_MSEC)),seqCnt);
@@ -231,6 +278,10 @@ void* Sequencer(void* params)
             // Service_2 = RT_MAX-2	@ 1 Hz
             if((seqCnt % 1) == 0) sem_post(&semS2);
 
+             get_timestamp(&end_time); //get end time
+            *(sequencer_end_time_buffer + seqCnt) = end_time;
+            seqCnt++;
+
         } while(!abortTest && (seqCnt < total_frames));
 
         sem_post(&semS1); 
@@ -246,7 +297,7 @@ void* Sequencer(void* params)
 		struct timespec measure_time;
 		struct timespec reference_time;		//To store the reference time at which sequencer starts
 		struct timespec set_time;			//To store time for clock_nanosleep()
-		double current_time;
+		double start_time,end_time;
 		double residual;
 		int rc, delay_cnt=0;
 		unsigned long long seqCnt=0;
@@ -256,7 +307,8 @@ void* Sequencer(void* params)
 		do
 		{
 			delay_cnt=0; residual=0.0;
-
+            get_timestamp(&start_time);
+            *(sequencer_start_time_buffer + seqCnt) = start_time;
 			do
 			{
 				//syslog(LOG_INFO,"SEQUENCER");
@@ -304,14 +356,6 @@ void* Sequencer(void* params)
 
 			//seqCnt++;
 
-			/* Calculate Start time */
-            // clock_gettime(CLOCK_REALTIME,&sequencer_start_time);
-
-
-
-            // syslog(LOG_INFO,"SEQ Count: %lld\t Sequencer start Time: %lf seconds\n",seqCnt,start_time);
-
-
 			if(delay_cnt > 1) printf("Sequencer looping delay %d\n", delay_cnt);
 
 
@@ -323,13 +367,8 @@ void* Sequencer(void* params)
 			// Service_2 = RT_MAX-2	@ 1 Hz
 			if((seqCnt % 1) == 0) sem_post(&semS2);
 
-			// Service_3 = RT_MAX-3	@ 1 Hz
-			//if((seqCnt % 1) == 0) sem_post(&semS3);
-
-			// clock_gettime(CLOCK_REALTIME, &sequencer_end_time);
-                        
-	
-
+            get_timestamp(&end_time);
+            *(sequencer_end_time_buffer + seqCnt) = end_time;
             seqCnt++;       //Increment the sequencer count
 
 
@@ -338,10 +377,8 @@ void* Sequencer(void* params)
 
 		sem_post(&semS1);	//Sem post service 1 (image capture)
 		sem_post(&semS2);	//Sem post service 2 (image dump)
-		//sem_post(&semS3);	//Sem post service 3 (send image via socket)
 		abortS1=1;		//abort service 1
-		//abortS2=TRUE;		//abort service 2
-		//abortS3=TRUE;		//abort service 3
+
 
 		pthread_exit((void *)0);	//exit sequencer
 	}

@@ -3,7 +3,7 @@
 
 CC = $(CROSS_COMPILE)gcc
 CFLAGS = -Wall -Werror
-SRCS = main.c thread.c v4l2_driver.c
+SRCS = main.c thread.c v4l2_driver.c analysis.c
 LIBRARY = -lpthread -lrt -lm
 OBJS = $(SRCS:.c=.o) #replace .c file 
 TARGET = main #$(SRCS:.c=) #replace .c with nothing"" for eg. writer.c => writer

@@ -52,7 +52,15 @@ extern int total_frames;
 extern struct timespec frame_time;
 extern unsigned char bigbuffer[(640*480*3)]; 
 extern unsigned char image_store[60][640*480*3];
-
+extern double* image_cap_start_time_buffer;
+extern double* image_cap_end_time_buffer;
+extern double* image_cap_execution_time_buffer;
+extern double* image_store_start_time_buffer;
+extern double* image_store_end_time_buffer;
+extern double* image_store_execution_time_buffer;
+extern double* sequencer_start_time_buffer ;
+extern double* sequencer_end_time_buffer;
+extern double* sequencer_execution_time_buffer;
 
 /***************************************************************************************
 *				FUNCTION PROTOTYPE
