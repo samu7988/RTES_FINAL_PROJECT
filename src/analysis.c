@@ -56,8 +56,16 @@ void analysis(char* file_name, double* start_time, double* end_time, double* exe
         {
             wcet = *(execution_time + i);
         
+
         }
-        jitter = (*(start_time + i -1) + deadline) - *(start_time + i);
+        if(i == 0)
+        {
+            jitter = 0;
+        }
+        else
+        {
+            jitter = (*(start_time + i -1) + deadline) - *(start_time + i);
+        }
         fprintf(fptr,"\n%d,%lf,%lf,%lf,%lf",i,*(start_time+i),*(end_time+i),*(execution_time+i),jitter);
 
     }
