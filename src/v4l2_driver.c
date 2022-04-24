@@ -144,7 +144,7 @@ char ppm_dumpname[]="test00000000.ppm";
         total+=written;
     } while(total < size);
 
-    printf("wrote %d bytes\n", total);
+    printf("\n\rwrote %d bytes", total);
 
     close(dumpfd);
     
@@ -324,7 +324,7 @@ void yuv2rgb(int y, int u, int v, unsigned char *r, unsigned char *g, unsigned c
         if(nanosleep(&read_delay, &time_error) != 0)
                 perror("nanosleep");
         else
-                printf("time_error.tv_sec=%ld, time_error.tv_nsec=%ld\n", time_error.tv_sec, time_error.tv_nsec);
+                printf("\n\rtime_error.tv_sec=%ld, time_error.tv_nsec=%ld\n", time_error.tv_sec, time_error.tv_nsec);
 
         }
 
