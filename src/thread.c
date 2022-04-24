@@ -76,7 +76,7 @@ void* Image_dump_thread(void* params)
         printf("\n\r[Thread3]   Start time %lf",start_time);
         #endif
 
-        //dump_ppm( (image_store + (frame_dump_cnt % 60)), ((size_of_image*6)/4), frame_dump_cnt, &frame_time);
+        dump_ppm( (image_store + (frame_dump_cnt % 60)), ((size_of_image*6)/4), frame_dump_cnt, &frame_time);
 
 
         // get_timestamp(&end_time); //get end time
@@ -104,7 +104,7 @@ void* Image_capture_thread(void* params)
        #ifdef IMG_CAP_DBG
        printf("\n\r[Thread1]   Start time %lf",start_time);
        #endif
-       // mainloop(); //Read frame and convert it to RGB
+       mainloop(); //Read frame and convert it to RGB
 
         //get_timestamp(&end_time); //get end time
         //printf("\n\r Stop time %lf",end_time);
@@ -139,11 +139,12 @@ void* Image_store_thread(void* params)
         #ifdef IMG_STORE_DBG 
         printf("\n\r[Thread2]   Start time %lf",start_time);
         #endif
+       
         //Copy image from Big buffer into circular buffer(big buffer is populated in image capture thread) 
-		// for(int i=0;i<(640*480*3);i++)
-		// {
-		// 	image_store[frame_store_cnt % 60][i] = bigbuffer[i];
-		// }
+		for(int i=0;i<(640*480*3);i++)
+		{
+			image_store[frame_store_cnt % 60][i] = bigbuffer[i];
+		}
 
         // get_timestamp(&end_time); //get end time
        // printf("\n\r Stop time %lf",end_time);
@@ -184,8 +185,6 @@ void* Sequencer(void* params)
         //syslog(LOG_CRIT, "Sequencer thread prior to delay @ sec=%d, msec=%d\n", (int)(current_time_val.tv_sec-start_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
         do
         {
-
-
 
 				set_time_1hz.tv_sec +=1;
 
@@ -232,7 +231,7 @@ void* Sequencer(void* params)
 
     sem_post(&semS1); 
     sem_post(&semS2);
-    abortS1=1;
+     abortS1=1;
      abortS2=1; 
     pthread_exit((void *)0);
 

@@ -183,126 +183,132 @@ int main(int argc, char** argv)
       threadParams[i].threadIdx=i;
     }
 
-
+    open_device();		
+    init_device();		
+    start_capturing();
     
     //Set affinity of thread to CPU and create threads
     //Socket thread
     CPU_ZERO(&threadcpu);
-	CPU_SET(2, &threadcpu);
-	rc=pthread_attr_setaffinity_np(&rt_sched_attr[4], sizeof(cpu_set_t), &threadcpu);
-    if(rc)
-    {
-        printf("\n\rpthread_attr_setaffinity() failed for Socket thread");    
-    }
-	rt_param[4].sched_priority=rt_max_prio-1;
-	pthread_attr_setschedparam(&rt_sched_attr[4], &rt_param[4]);
-	
-	/* Create Thread */
-	rc=pthread_create(&threads[4], &rt_sched_attr[4], Socket_thread, (void *)&(threadParams[4]));
-	if(rc < 0)
-    {
-		perror("Socket thread failed");
-    }
-    else
-    {
-		printf("Image capture thread success\n");
-    }
+    CPU_SET(2, &threadcpu);
+    rc=pthread_attr_setaffinity_np(&rt_sched_attr[4], sizeof(cpu_set_t), &threadcpu);
+      if(rc)
+      {
+          printf("\n\rpthread_attr_setaffinity() failed for Socket thread");    
+      }
+    rt_param[4].sched_priority=rt_max_prio-1;
+    pthread_attr_setschedparam(&rt_sched_attr[4], &rt_param[4]);
 
-    //Image dump thread
+    /* Create Thread */
+    rc=pthread_create(&threads[4], &rt_sched_attr[4], Socket_thread, (void *)&(threadParams[4]));
+    if(rc < 0)
+      {
+      perror("Socket thread failed");
+      }
+      else
+      {
+      printf("Image capture thread success\n");
+      }
+
+      //Image dump thread
+      CPU_ZERO(&threadcpu);
+    CPU_SET(2, &threadcpu);
+    rc=pthread_attr_setaffinity_np(&rt_sched_attr[3], sizeof(cpu_set_t), &threadcpu);
+      if(rc)
+      {
+          printf("\n\rpthread_attr_setaffinity() failed for Image dump thread");   
+      }
+    rt_param[3].sched_priority=rt_max_prio-1;
+    pthread_attr_setschedparam(&rt_sched_attr[3], &rt_param[3]);
+
+    /* Create Thread */
+    rc=pthread_create(&threads[3], &rt_sched_attr[3], Image_dump_thread, (void *)&(threadParams[3]));
+    if(rc < 0)
+      {
+      perror("Socket thread failed");
+      }
+      else
+      {
+      printf("Image capture thread success\n");
+      }
+
+      //Image capture thread
     CPU_ZERO(&threadcpu);
-	CPU_SET(2, &threadcpu);
-	rc=pthread_attr_setaffinity_np(&rt_sched_attr[3], sizeof(cpu_set_t), &threadcpu);
+    CPU_SET(3, &threadcpu);
+    rc=pthread_attr_setaffinity_np(&rt_sched_attr[2], sizeof(cpu_set_t), &threadcpu);
+      if(rc)
+      {
+          printf("\n\rpthread_attr_setaffinity() failed for Image capture thread");    
+      }
+    rt_param[2].sched_priority=rt_max_prio-1;
+    pthread_attr_setschedparam(&rt_sched_attr[2], &rt_param[2]);
+
+    /* Create Thread */
+    rc=pthread_create(&threads[2], &rt_sched_attr[2], Image_capture_thread, (void *)&(threadParams[2]));
+    if(rc < 0)
+      {
+      perror("Image capture thread failed");
+      }
+      else
+      {
+      printf("Image capture thread success\n");
+      }
+
+      //Image store
+      CPU_ZERO(&threadcpu);
+    CPU_SET(3, &threadcpu);
+    rc=pthread_attr_setaffinity_np(&rt_sched_attr[1], sizeof(cpu_set_t), &threadcpu);
     if(rc)
+      {
+          printf("\n\rpthread_attr_setaffinity() failed for Image store");
+          
+      }
+      rt_param[1].sched_priority=rt_max_prio-2;
+    pthread_attr_setschedparam(&rt_sched_attr[1], &rt_param[1]);
+
+    /* Create Thread */
+    rc=pthread_create(&threads[1], &rt_sched_attr[1], Image_store_thread, (void *)&(threadParams[1]));
+    if(rc < 0)
+      {
+      perror("Image store thread failed");
+      }
+      else
+      {
+      printf("Image store thread success\n");
+      }
+
+      //Sequencer
+      CPU_ZERO(&threadcpu);
+    CPU_SET(3, &threadcpu);
+    rc=pthread_attr_setaffinity_np(&rt_sched_attr[0], sizeof(cpu_set_t), &threadcpu);
+      if(rc)
+      {
+          printf("\n\rpthread_attr_setaffinity() failed for sequencer");
+
+      }
+    rt_param[0].sched_priority=rt_max_prio;
+    pthread_attr_setschedparam(&rt_sched_attr[0], &rt_param[0]);
+
+    /* Create Thread */
+    rc=pthread_create(&threads[0], &rt_sched_attr[0], Sequencer, (void *)&(threadParams[0]));
+    if(rc < 0)
+      {
+      perror("Image store thread failed");
+      }
+      else
+      {
+      printf("Image store thread success\n");
+      }
+
+    //Join threads
+    for(int i=0;i<NUM_THREADS;i++)
     {
-        printf("\n\rpthread_attr_setaffinity() failed for Image dump thread");   
-    }
-	rt_param[3].sched_priority=rt_max_prio-1;
-	pthread_attr_setschedparam(&rt_sched_attr[3], &rt_param[3]);
-	
-	/* Create Thread */
-	rc=pthread_create(&threads[3], &rt_sched_attr[3], Image_dump_thread, (void *)&(threadParams[3]));
-	if(rc < 0)
-    {
-		perror("Socket thread failed");
-    }
-    else
-    {
-		printf("Image capture thread success\n");
+      pthread_join(threads[i], NULL);
     }
 
-    //Image capture thread
-	CPU_ZERO(&threadcpu);
-	CPU_SET(3, &threadcpu);
-	rc=pthread_attr_setaffinity_np(&rt_sched_attr[2], sizeof(cpu_set_t), &threadcpu);
-    if(rc)
-    {
-        printf("\n\rpthread_attr_setaffinity() failed for Image capture thread");    
-    }
-	rt_param[2].sched_priority=rt_max_prio-1;
-	pthread_attr_setschedparam(&rt_sched_attr[2], &rt_param[2]);
-	
-	/* Create Thread */
-	rc=pthread_create(&threads[2], &rt_sched_attr[2], Image_capture_thread, (void *)&(threadParams[2]));
-	if(rc < 0)
-    {
-		perror("Image capture thread failed");
-    }
-    else
-    {
-		printf("Image capture thread success\n");
-    }
-
-    //Image store
-    CPU_ZERO(&threadcpu);
-	CPU_SET(3, &threadcpu);
-	rc=pthread_attr_setaffinity_np(&rt_sched_attr[1], sizeof(cpu_set_t), &threadcpu);
-	if(rc)
-    {
-        printf("\n\rpthread_attr_setaffinity() failed for Image store");
-        
-    }
-    rt_param[1].sched_priority=rt_max_prio-2;
-	pthread_attr_setschedparam(&rt_sched_attr[1], &rt_param[1]);
-	
-	/* Create Thread */
-	rc=pthread_create(&threads[1], &rt_sched_attr[1], Image_store_thread, (void *)&(threadParams[1]));
-	if(rc < 0)
-    {
-		perror("Image store thread failed");
-    }
-    else
-    {
-		printf("Image store thread success\n");
-    }
- 
-    //Sequencer
-    CPU_ZERO(&threadcpu);
-	CPU_SET(3, &threadcpu);
-	rc=pthread_attr_setaffinity_np(&rt_sched_attr[0], sizeof(cpu_set_t), &threadcpu);
-    if(rc)
-    {
-        printf("\n\rpthread_attr_setaffinity() failed for sequencer");
-
-    }
-	rt_param[0].sched_priority=rt_max_prio;
-	pthread_attr_setschedparam(&rt_sched_attr[0], &rt_param[0]);
-	
-	/* Create Thread */
-	rc=pthread_create(&threads[0], &rt_sched_attr[0], Sequencer, (void *)&(threadParams[0]));
-	if(rc < 0)
-    {
-		perror("Image store thread failed");
-    }
-    else
-    {
-		printf("Image store thread success\n");
-    }
-
-  //Join threads
-	for(int i=0;i<NUM_THREADS;i++)
-	{
-		pthread_join(threads[i], NULL);
-	}
+  	stop_capturing();	//Stop Capturing images
+	  uninit_device();	// Free resources allocated for use of this application
+	  close_device();		// Close the device
     return 0;
 }
 
