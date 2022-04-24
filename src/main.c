@@ -309,6 +309,16 @@ int main(int argc, char** argv)
   	stop_capturing();	//Stop Capturing images
 	  uninit_device();	// Free resources allocated for use of this application
 	  close_device();		// Close the device
+
+    free(image_cap_start_time_buffer);
+    free(image_cap_end_time_buffer);
+    free(image_cap_execution_time_buffer);
+    free(image_store_start_time_buffer);
+    free(image_store_end_time_buffer);
+    free(image_cap_execution_time_buffer);
+    free(sequencer_start_time_buffer);
+    free(sequencer_end_time_buffer);
+    free(sequencer_execution_time_buffer);
     return 0;
 }
 

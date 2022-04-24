@@ -61,7 +61,7 @@ extern double* image_store_execution_time_buffer;
 extern double* sequencer_start_time_buffer ;
 extern double* sequencer_end_time_buffer;
 extern double* sequencer_execution_time_buffer;
-
+extern uint8_t freq;
 /***************************************************************************************
 *				FUNCTION PROTOTYPE
 *****************************************************************************************/

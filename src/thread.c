@@ -28,7 +28,6 @@
 unsigned char image_store[60][640*480*3];
 struct timeval prev_time_val;
 int abortTest=0;
-long int freq = 10;
 
 /**********************************************************************************
 *				FUNCTION DEFINITION
@@ -219,8 +218,8 @@ void* Sequencer(void* params)
     }
     if(freq == 1)
     {
+        printf("\n\rRunning for frequency %d",freq);
         struct timeval current_time_val;
-        struct timespec delay_time = {0,999999999};//{0,100000000}; // delay for 1000 msec, 1 Hz
         struct timespec remaining_time;
         struct timespec set_time_1hz;		
         struct timespec reference_time_1hz;	
@@ -241,9 +240,9 @@ void* Sequencer(void* params)
             do
             {
 
-                    set_time_1hz.tv_sec +=1;
+                set_time_1hz.tv_sec +=1;
 
-                    clock_nanosleep(CLOCK_REALTIME, TIMER_ABSTIME, &set_time_1hz, NULL);
+                clock_nanosleep(CLOCK_REALTIME, TIMER_ABSTIME, &set_time_1hz, NULL);
 
                 if(rc == EINTR)
                 { 
@@ -292,6 +291,7 @@ void* Sequencer(void* params)
     }
 	else if(freq == 10)
 	{
+        printf("\n\rRunning sequencer for %d",freq);
 		struct timeval current_time_val;		//To store the current time value
 		struct timespec remaining_time;		
 		struct timespec measure_time;
