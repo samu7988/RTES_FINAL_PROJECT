@@ -48,7 +48,7 @@ void get_timestamp(double *timestamp)
     gettimeofday(&time_val, (struct timezone *)0);
     //clock_gettime(CLOCK_REALTIME,&time_val);
     //*timestamp = ((double)time_val.tv_sec + (double)((time_val.tv_nsec)/(double)1000000000));
-    *timestamp = ((double)time_val.tv_sec + (double)(current_time_val.tv_usec/USEC_PER_MSEC);
+    *timestamp = ((double)time_val.tv_sec + (double)(current_time_val.tv_usec/USEC_PER_MSEC));
     
 }
 
