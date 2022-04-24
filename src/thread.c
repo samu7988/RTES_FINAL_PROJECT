@@ -45,8 +45,11 @@ int abortTest=0;
 void get_timestamp(double *timestamp)
 {
     struct timespec time_val;
-    clock_gettime(CLOCK_REALTIME,&time_val);
-    *timestamp = ((double)time_val.tv_sec + (double)((time_val.tv_nsec)/(double)1000000000));
+    gettimeofday(&time_val, (struct timezone *)0);
+    //clock_gettime(CLOCK_REALTIME,&time_val);
+    //*timestamp = ((double)time_val.tv_sec + (double)((time_val.tv_nsec)/(double)1000000000));
+    *timestamp = ((double)time_val.tv_sec + (double)(current_time_val.tv_usec/USEC_PER_MSEC);
+    
 }
 
 
@@ -94,10 +97,10 @@ void* Image_capture_thread(void* params)
         //printf("\n\rImage capture start");
 
         get_timestamp(&start_time); //get start time
-       // printf("\n\rStart time %lf",start_time);
+       printf("\n\rStart time %lf",start_time);
        // mainloop(); //Read frame and convert it to RGB
 
-        get_timestamp(&end_time); //get end time
+        //get_timestamp(&end_time); //get end time
         //printf("\n\r Stop time %lf",end_time);
 
         frame_number++;
@@ -203,10 +206,15 @@ void* Sequencer(void* params)
         seqCnt++;
         gettimeofday(&current_time_val, (struct timezone *)0);
        // syslog(LOG_CRIT, "Sequencer cycle %llu @ sec=%d, msec=%d\n", seqCnt, (int)(current_time_val.tv_sec-prev_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
+        
+        #ifdef SEQ_DEBUG
         printf( "Sequencer cycle %llu @ sec=%d, msec=%d\n", seqCnt, (int)(current_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
+        #endif
 
-        if(delay_cnt > 1) printf("Sequencer looping delay %d\n", delay_cnt);
-
+        if(delay_cnt > 1)
+        {
+            printf("Sequencer looping delay %d\n", delay_cnt);
+        }
 
         // Release each service at a sub-rate of the generic sequencer rate
 
