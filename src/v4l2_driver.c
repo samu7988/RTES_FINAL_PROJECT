@@ -144,7 +144,7 @@ char ppm_dumpname[]="test00000000.ppm";
         total+=written;
     } while(total < size);
 
-    printf("\n\rwrote %d bytes", total);
+//     printf("\n\rwrote %d bytes", total);
 
     close(dumpfd);
     
@@ -210,7 +210,7 @@ void yuv2rgb(int y, int u, int v, unsigned char *r, unsigned char *g, unsigned c
     {
 
 #if defined(COLOR_CONVERT)
-        printf("\n\rDump YUYV converted to RGB size %d", size);
+        // printf("\n\rDump YUYV converted to RGB size %d", size);
        
         // Pixels are YU and YV alternating, so YUYV which is 4 bytes
         // We want RGB, so RGBRGB which is 6 bytes
@@ -228,7 +228,7 @@ void yuv2rgb(int y, int u, int v, unsigned char *r, unsigned char *g, unsigned c
     }
     else
     {
-        printf("ERROR - unknown dump format\n");
+        // printf("ERROR - unknown dump format\n");
     }
 
     fflush(stderr);
@@ -266,7 +266,7 @@ void yuv2rgb(int y, int u, int v, unsigned char *r, unsigned char *g, unsigned c
 
 
                     default:
-                        printf("mmap failure\n");
+                        // printf("mmap failure\n");
                         errno_exit("VIDIOC_DQBUF");
                 }
             }
@@ -324,7 +324,7 @@ void yuv2rgb(int y, int u, int v, unsigned char *r, unsigned char *g, unsigned c
         if(nanosleep(&read_delay, &time_error) != 0)
                 perror("nanosleep");
         else
-                printf("\n\rtime_error.tv_sec=%ld, time_error.tv_nsec=%ld\n", time_error.tv_sec, time_error.tv_nsec);
+                // printf("\n\rtime_error.tv_sec=%ld, time_error.tv_nsec=%ld\n", time_error.tv_sec, time_error.tv_nsec);
 
         }
 
@@ -355,7 +355,7 @@ void start_capturing(void)
         case IO_METHOD_MMAP:
                 for (i = 0; i < n_buffers; ++i) 
                 {
-                        printf("allocated buffer %d\n", i);
+                        // printf("allocated buffer %d\n", i);
                         struct v4l2_buffer buf;
 
                         CLEAR(buf);
@@ -536,7 +536,7 @@ void start_capturing(void)
 
     if (force_format)
     {
-        printf("FORCING FORMAT\n");
+        // printf("FORCING FORMAT\n");
         fmt.fmt.pix.width       = HORIZONTAL_RES;
         fmt.fmt.pix.height      = VERTICAL_RES;
 
@@ -562,7 +562,7 @@ void start_capturing(void)
     }
     else
     {
-        printf("ASSUMING FORMAT\n");
+        // printf("ASSUMING FORMAT\n");
         /* Preserve original settings as set by v4l2-ctl for example */
         if (-1 == xioctl(fd, VIDIOC_G_FMT, &fmt))
                     errno_exit("VIDIOC_G_FMT");
