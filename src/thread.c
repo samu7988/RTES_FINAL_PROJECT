@@ -75,7 +75,7 @@ void* Image_dump_thread(void* params)
         #ifdef IMG_DMP_DBG
         printf("\n\r[Thread3]Start time %lf",start_time);
         #endif
-        
+
         //dump_ppm( (image_store + (frame_dump_cnt % 60)), ((size_of_image*6)/4), frame_dump_cnt, &frame_time);
 
 
@@ -212,7 +212,7 @@ void* Sequencer(void* params)
        // syslog(LOG_CRIT, "Sequencer cycle %llu @ sec=%d, msec=%d\n", seqCnt, (int)(current_time_val.tv_sec-prev_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
         
         #ifdef SEQ_DEBUG
-        printf( "Sequencer cycle %llu @ sec=%d, msec=%d\n", seqCnt, (int)(current_time_val.tv_sec), (int)current_time_val.tv_usec/USEC_PER_MSEC);
+        printf( "[Sequencer] Start time %lf", ((double)current_time_val.tv_sec + (double)(current_time_val.tv_usec/USEC_PER_MSEC)));
         #endif
 
         if(delay_cnt > 1)
