@@ -34,8 +34,8 @@
 *				     MACROS AND ENUMS
 *****************************************************************************************/
 // #define SEQ_DEBUG (0)
-#define IMG_STORE_DBG (1)
-#define IMG_CAP_DBG (0)
+//#define IMG_STORE_DBG (1)
+//#define IMG_CAP_DBG (0)
 // #define IMG_DMP_DBG (0)
 /****************************************************************************************
 *				GLOBAL VARIABLE SECTION
